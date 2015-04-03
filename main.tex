@@ -39,7 +39,7 @@
 %
 % disable paragraph indentation
 %
-\usepackage{parskip}
+\setlength{\parindent}{0pt}
 
 %
 % number sets
@@ -53,6 +53,11 @@
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\LL}{\mathcal{L}}
 \newcommand{\powerset}{\mathcal P}
+
+%
+% notation helpers
+%
+\newcommand{\matr}[1]{\mathbf{#1}}
 
 %
 % section settings
@@ -80,6 +85,6 @@
 \clearpage
 
 % chapters
-
+\input{linalg.tex}
 
 \end{document}

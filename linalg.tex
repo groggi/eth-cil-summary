@@ -1,0 +1,117 @@
+\chapter{Linear Algebra Basics}
+\section{Notation}
+Let \(\matr{U}\) be a matrix:
+\begin{itemize}
+\item \(\matr{u} = (u_1, u_2, \ldots, u_n)^\top\) where \(\matr{u}\) is a vector and \(u_i,\, i \in \{1, \ldots, n\}\) its elements
+\item Vectors always considered to be column vectors
+\item \(\matr{u}_k\) or \(\matr{u}_{\cdot, k}\) is the \(k\)-th column of \(\matr{U}\)
+\item \(\matr{u}^\top_d\) or \(\matr{u}_{d, \cdot}\) is the \(d\)-th row of \(\matr{U}\)
+\item \(\matr{u}_{d, k}\) is the element in \(d\)-th row and \(k\)-th column
+\item \(\R^{D \times N} \ni \matr{U} = (\matr{u_1}, \matr{u_2}, \ldots, \matr{u_n}) = \begin{pmatrix}
+u_{1,1} & \cdots & u_{1, N} \\
+\vdots & \ddots & \vdots \\
+u_{D, 1} & \cdots & u_{D, N}
+\end{pmatrix}\)
+\end{itemize}
+
+\section{Scalar Product}
+Let \(\matr{x}, \matr{y} \in \R^{D \times 1}\) then \[ \langle \matr{x}, \matr{y} \rangle := \matr{x}^\top \matr{y} = (x_1, x_2, \ldots, x_D) \begin{pmatrix}
+y_1 \\ y_2 \\ \vdots \\ y_n
+\end{pmatrix} = \sum_{d=1}^D x_d \cdot y_d\]
+
+Basic properties and useful lemmas
+\begin{itemize}
+\item \(\langle \matr{x}, \matr{x} \rangle = \matr{x}^\top \matr{x}\) is the \textit{squared} Euclidean length/norm of \(\matr{x}\), i.e. \(\langle \matr{x}, \matr{x} \rangle = \| \matr{x} \|^2\)
+\item the \(L_2\) Norm (aka Euclidean norm/length): \(\| \matr{x} \|_2 := \sqrt{\langle \matr{x}, \matr{x} \rangle} = \sqrt{\matr{x}^\top \matr{x}}\).
+\item The angle between two vectors \(\theta = \angle(\matr{x}, \matr{y})\) is generally known by the equation \[\langle \matr{x}, \matr{y} \rangle = \| \matr{x} \|_2 \| \matr{y} \|_2 \cos(\theta)\]
+\item if \(\matr{y}\) is a unit vector (i.e. \(\| \matr{x} \|_2 = 1\)), then \[\langle \matr{x}, \matr{y} \rangle = \| \matr{x} \|_2 \underbrace{\| \matr{y} \|_2}_{= 1} \cos(\theta) = \| \matr{x} \|_2 \cos(\theta)\] and it represents the magnitude of the projection of \(\matr{x}\) onto \(\matr{y}\)
+\item \(\langle \matr{x}, \matr{y} \rangle = 0 \Leftrightarrow \matr{x}\) and \(\matr{y}\) are orthogonal.
+\end{itemize}
+
+\section{Vector Space}
+\begin{itemize}
+\item A \textit{vector space} is a set of vectors which are closed under vector addition and (scalar) multiplication.
+\item A \textit{subspace} is a subset of the vectors of a vector space which is itself a vector space. Must always include the origin, i.e. the zero vector.
+\end{itemize}
+
+\begin{definition}[Column Space]
+Is the space defined by the set of all vectors \(\matr{b}\) solving \(\matr{A} \matr{x} = \matr{b}\) for any \(\matr{x}\).
+
+This is also known as the \textit{range}: \[\operatorname{range}(\matr{A}) := \{\matr{b}\ |\ \exists \matr{x}: \matr{Ax} = \matr{b}\}\]
+\end{definition}
+
+\begin{definition}[Nullspace]
+Is the space defined by the set of all vectors \(\matr{x}\) solving \(\matr{Ax} = \matr{0}\):
+\[\operatorname{null}(\matr{A}) := \{\matr{x}\ |\ \matr{Ax} = \matr{0}\}\]
+\end{definition}
+
+\begin{definition}[Spanning the Space]
+If all vectors of a space can be expressed by a linear combination of the vectors \(\matr{v_1}, \matr{v_2}, \ldots, \matr{v_n}\), then \(\matr{v_1}, \matr{v_2}, \ldots, \matr{v_n}\) \textit{span} the space.
+\end{definition}
+
+\begin{definition}[Basis]
+A \textit{basis} \(B\) of a vector space \(V\) is a \textbf{linearly independent} subset of \(V\) that \textbf{spans} \(V\).
+\end{definition}
+
+Properties of vector space basis:
+\begin{itemize}
+\item There can be multiple different basis for a space.
+\item All basis have the same number of vectors
+\item Each basis is a maximal set of linearly independent vectors and minimal set of spanning vectors.
+\end{itemize}
+
+\begin{definition}[Dimension]
+The \textit{dimension} of a vector space is the number of vectors in a/any basis for the space.
+\end{definition}
+
+\begin{definition}[Rank]
+The \textit{column rank} of \(\matr{A}\) is the dimension of \(\operatorname{range}(A)\).
+
+This is equivalent to the maximum number of linearly independent column vectors in \(\matr{A}\).
+
+It can be shown that the \textit{row rank} and column rank are always equal.
+\end{definition}
+
+\begin{theorem}[Fundamental Theorem of Linear Algebra]
+If \(\matr{A}\) is \(M \times N\) with rank \(R\), then
+\begin{itemize}
+\item \(\operatorname{range}(\matr{A})\) has dimension \(R\)
+\item \(\operatorname{null}(\matr{A})\) has dimension \(N - R\)
+\item row space of \(\matr{A} = \operatorname{range}(\matr{A}^\top)\) has dimension \(R\)
+\end{itemize}
+\end{theorem}
+
+\section{Linear Independence}
+Vectors \(\matr{v_1}, \matr{v_2}, \ldots, \matr{v_n}\) are \textit{linearly independent} if
+\[c_1 \cdot \matr{v_1} + c_2 \cdot \matr{v_2} + \cdots + c_n \cdot \matr{v_n} = 0 \text{ implies } c_1 = c_2 = \cdots = 0\]
+
+Therefore, if we view these vectors \(\matr{v_i}\) as columns of a matrix \(\matr{V}\) the vectors are linearly independent if the null space only contains the origin.
+
+\section{Inverse}
+Let \(\matr{A}\) be a square (\(M \times M\)) matrix. The following statements are equivalent:
+\begin{itemize}
+\item \(\matr{A}\) is invertible/nonsingular
+\item \(\matr{A}\) has full rank: \(\operatorname{rank}(\matr{A}) = M\)
+\item \(\matr{A}\)'s columns form a basis for the whole space \(\R^M\): \(\operatorname{range}(\matr{A}) = \R^M\)
+\item \(\operatorname{null}(\matr{A}) = \{\matr{0}\}\)
+\item \(\matr{Ax} = \matr{b}\) has only one solution for each \(\matr{b}\)
+\item \(0\) is not an eigenvalue of \(\matr{A}\)
+\end{itemize}
+
+Basic properties:
+\begin{itemize}
+\item \(\matr{A}\matr{A}^{-1} = \matr{A}^{-1}\matr{A} = \matr{I}\)
+\item \((k\matr{A})^{-1} = k^{-1}\matr{A}^{-1}\) for nonzero \(k\)
+\item \((\matr{A}^\top)^{-1} = (\matr{A}^{-1})^\top\)
+\end{itemize}
+
+\section{Eigenvalues and Eigenvectors}
+\begin{definition}
+Let \(\matr{A}\) be a square matrix. The set of eigen-pairs \((\underbrace{\lambda}_\text{Eigenvalue}, \underbrace{\matr{u}}_\text{Eigenvector})\) is a solution for \(\matr{Au} = \lambda\matr{u}\).
+
+\textbf{Eigenvector} \(\matr{u}\): The direction of \(\matr{u}\) is not changed by transformation \(\matr{A}\). It is only scaled by a factor \(\lambda\), the \textbf{Eigenvalue}.
+\end{definition}
+
+\begin{definition}[Eigendecomposition]
+The \textit{Eigendecomposition} is defined by \(\matr{A} = \matr{U \Lambda U^{-1}}\), where \(\matr{A}\) is a square matrix and \(\matr{\Lambda}\) is a diagonal matrix with the eigenvalues on the diagonal.
+\end{definition}
