@@ -1,0 +1,85 @@
+\documentclass[a4paper,titlepage]{report}
+
+%
+% packages
+%
+\usepackage{
+  amssymb,
+  amsfonts,
+  amsmath,
+  mathtools,
+  enumitem,
+  hyperref,
+  todonotes,
+  wasysym
+}
+
+%
+% utf8 fix
+%
+\usepackage[utf8]{inputenc}
+
+%
+% amsthm
+%
+\usepackage{amsthm}
+
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Korollar}[section]
+\newtheorem{tipp}{Tipp}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{satz}{Satz}[section]
+\newtheorem{hilfssatz}{Hilfssatz}[section]
+\newtheorem{remark}{Bemerkung}[section]
+
+%
+% disable paragraph indentation
+%
+\usepackage{parskip}
+
+%
+% number sets
+%
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\powerset}{\mathcal P}
+
+%
+% section settings
+%
+\setcounter{secnumdepth}{3}
+
+%
+% document
+%
+
+\begin{document}
+
+% title
+\title{Computational Intelligence Lab SS15}
+\author{Gregor Wegberg}
+\date{\today}
+\maketitle
+
+% index
+\tableofcontents
+\clearpage
+
+% todo list
+\listoftodos
+\clearpage
+
+% chapters
+
+
+\end{document}
