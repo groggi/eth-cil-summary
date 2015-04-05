@@ -3,5 +3,131 @@
 \section{Intrinsic Dimensionality}
 The goal is to find the ``information-preserving''/``interesting'' dimensions. Usually we have a high-dimensional space (let it be of dimension \(M\)) and try to project it to a low-dimensional space (i.e. to a dimension \(N\) such that \(0 \leq N \leq M\)) without loosing ``too much'' of the information (with regard to a loss function). This can be used for example for data compression, feature selection or complexity reduction (``noise removal'').
 
-\section{Principle Component Analysis}
-\todo[inline]{lecture02, slide 13ff}
+\section{Iterative View}
+PCA can be viewed as an iterative process. First search for a line that is the best approximation of all data points. Therefore we search a line trough the data in the high-dimensional space with the smallest sum of distances (the errors) to each point. This first line is the first principle component. Next search for a second line (the second principle component) with the same property plus being orthogonal to the already existing line. Repeat this till the amount of lines found is equal to the desired dimension of the low-dimensional space.
+
+The found principle components span the new low-dimensional space and the data is transformed from the high-dimensional space into the low-dimensional space.
+
+Minimizing the error, i.e. the distances of the data to each principle component, is formally equivalent to maximizing the variance, i.e. maximizing the difference between the data points after they were projected onto the principle component. Requiring to maximize the variance results in preservation of information.
+
+The dimension of the low-dimensional space can be set by defining a percentage of the total variance that should be represented by the low-dimensional space.
+
+\section{Successive Variance Maximization}
+\todo[inline]{Unclear what this part of lecture02 should explain/mean}
+Let \(\{\matr{x}_n\},\ \matr{x}_n \in \R^D,\ n = 1, \ldots, N\). The goal is now to project the data \(\matr{x}_n\) onto a \(K \leq D\) dimensional space while maximizing the variance of the projected data. The data \(\matr{x}_n\) is represented by a matrix \(\matr{X} = [\matr{x}_1, \matr{x}_2, \ldots, \matr{x}_N] \in \R^{D \times N}\).
+
+\section{Statistics}
+\begin{definition}[Empirical Mean of original data]
+\[
+\bar{\matr{x}} = \frac{1}{N} \sum_{n=1}^{N} \matr{x}_n
+\]
+\end{definition}
+
+\begin{definition}[Covariance of original data]
+\[
+\matr{\Sigma} = \frac{1}{N}\sum_{n=1}^{N}(\matr{x}_n - \bar{\matr{x}})(\matr{x}_n - \bar{\matr{x}})^\top
+\]
+\end{definition}
+
+\section{Derivation of PCA using Eigenvalue Decomposition}
+Let \(\matr{u}_1\) be the first principle direction/component and \(\matr{u}_2\) the second one.
+
+\subsection{Statistics of Projected Data}
+The \textit{mean} of the projected data is \(\matr{u}_1^\top \bar{\matr{x}}\). The \textit{variance} of the projected data is \begin{align*}
+\frac{1}{N}\sum_{n=1}^N \left\lbrace \matr{u}_1^\top \matr{x}_n - \matr{u}_1^\top \bar{\matr{x}} \right\rbrace^2 &= \frac{1}{N} \sum_{n=1}^N \left\lbrace \matr{u}_1^\top (\matr{x}_n - \bar{\matr{x}}) \right\rbrace^2\\
+&= \frac{1}{N} \sum_{n=1}^N \matr{u}_1\top (\matr{x}_n - \bar{\matr{x}}) (\matr{x}_n - \bar{\matr{x}})^\top \matr{u}_1\\
+&= \matr{u}_1^\top \underbrace{\matr{\Sigma}}_{\mathclap{\text{covariance of original data}}} \matr{u}_1
+\end{align*}
+
+\subsection{Maximization Problem}
+The next step is now to maximize the variance of the projected data, i.e.
+\[
+\max_{\matr{u}_1} \matr{u}_1^\top \matr{\Sigma} \matr{u}_1,\ \text{such that } \|\matr{u}_1\|_2 = 1.
+\]
+
+This can be achieved by the \textit{Lagrangian} of the maximization problem:
+\[
+\mathcal{L} = \matr{u}_1^\top \matr{\Sigma} \matr{u}_1 + \lambda_1 (1 - \matr{u}_1^\top \matr{u}_1).
+\]
+
+Setting \(\frac{\partial}{\partial\matr{u}_1} \mathcal{L} \overset{!}{=} 0\) results in
+\[
+\matr{\Sigma} \matr{u}_1 = \lambda_1 \matr{u}_1.
+\]
+
+We get the solution by observing that \(\matr{u}_1\) is an \textit{eigenvector} of \(\matr{\Sigma}\) and \(\lambda_1\) its associated \textit{eigenvalue}. \(\lambda_1\) is even the variance of the projected data, i.e. \(\lambda_1 = \matr{u}_1^\top \matr{\Sigma} \matr{u}_1\).
+
+Therefore, maximizing the variance results in choosing the eigenvector with the largest associated eigenvalue (the variance). This results in the \textit{first} \textbf{principle direction}.
+
+\subsection{Second Principal Direction}
+This time the variance is maximized along the second principal direction \(\matr{u}_2\), i.e. \(\max_{\matr{u}_2} \matr{u}_2^\top \matr{\Sigma} \matr{u}_2\). At the same time it's required that \(\|\matr{u}_2\|_2 = 1\) and \(\matr{u}_2^\top \matr{u}_1 = 0\) (both principle directions are orthogonal).
+
+Again the Lagrangian
+\[
+\mathcal{L} = \matr{u}_2^\top \matr{\Sigma} \matr{u}_2 + \lambda_2 (1 - \matr{u}_2^\top \matr{u}_2) + \eta (\matr{u}_2^\top \matr{u}_1)
+\]
+is used to solve the maximization problem by setting \(\frac{\partial}{\partial \matr{u}_2} \overset{!}{=} 0\) resulting in:
+\[
+2 \matr{\Sigma} \matr{u}_2 - 2 \lambda_2 \matr{u}_2 + \eta \matr{u}_1 = 0.
+\]
+
+Because of orthogonality (\(\langle \matr{u}_2, \matr{u}_1 \rangle = \matr{u}_2^\top \matr{u}_1 = 0\)) leads to \(\eta = 0\) and therefore
+\[
+\matr{\Sigma} \matr{u}_2 = \lambda_2 \matr{u}_2.
+\]
+
+As with the first principle component we can select the second one by choosing the eigenvector from \(\matr{\Sigma}\) with second largest eigenvalue \(\lambda_2\).
+
+\section{Eigenvalue Decomposition}
+\begin{definition}
+The \textit{eigenvalue decomposition} of the covariance matrix contains all relevant information for PCA. The eigenvalue decomposition is described by \[
+\matr{\Sigma} = \matr{U \Lambda U}^\top.
+\]
+\end{definition}
+
+To project from a \(D\)-dimensional space to a \(K\)-dimensional space, with \(K \leq D\), just choose \(K\) eigenvectors \(\{\matr{u}_1, \ldots, \matr{u}_K\}\) with largest associated eigenvalues \(\{\lambda_1, \ldots, \lambda_K\}\).
+
+\section{Minimum Error Formulation}
+Let \(\{\matr{u}_d\},\ \matr{u}_d \in \R^D,\ d = 1, \ldots, D\) be an orthonormal basis and \(\{\matr{x_n}\}\) data points.
+
+The \textit{orthogonal projection} of \(\matr{x}_n\) onto \(\matr{u}_d\) is given by \[
+z_{n,d} \cdot \matr{u}_d, \text{ with } z_{n,d} := \matr{x}_n^\top \matr{u}_d \in \R.
+\]
+
+Accordingly each \(\matr{x}_n\) can be represented in the \(D\)-dimensional space as \[
+\matr{x}_n = \sum_{d=1}^D z_{n,d} \cdot \matr{u}_d = \sum_{d=1}^D (\matr{x}_n^\top \matr{u}_d) \matr{u}_d.
+\]
+
+\textit{Restricted representation} using \(K\) (\(K < D\)) basis vectors: \[
+\tilde{\matr{x}}_n = \sum_{d=1}^K a_{n, d} \cdot \matr{u}_d + \sum_{d=K+1}^D b_d \cdot \matr{u}_d
+\]
+where \(b_d\) is independent of the data point \(\matr{x}_n\).
+
+The \textit{average approximation error} \(J\) of the restricted representation is measured by \[
+J(\{a_{n,d}\}, \{b_d\}) = \frac{1}{N} \sum_{n=1}^N \|\matr{x}_n - \tilde{\matr{x}}_n\|_2^2.
+\]
+
+Minimizing of \(J\) with regard to \(a_{n,d}\) is \(a_{n,d} = \matr{x}_n^\top \matr{u}_d\) and with regard to \(b_d\) it's \(\bar{\matr{x}}^\top \matr{u}_d\). By resubstituting \(a_{n,d}\) and \(b_d\) for the \textit{displacement} we get \[
+\matr{x}_n - \tilde{\matr{x}}_n = \sum_{d=K+1}^D \left\lbrace (\matr{x}_n - \bar{\matr{x}})^\top \matr{u}_d \right\rbrace \matr{u}_d.
+\]
+
+The \textit{displacement vector} is orthogonal to the principle subspace.
+
+Now we resubstitute the displacement into the error criterion which leads to \[
+J = \frac{1}{N}\sum_{n=1}^N \sum_{d=K+1}^D (\matr{x}_n^\top \matr{u}_d - \bar{\matr{x}}^\top \matr{u}_d)^2 = \sum_{d=K+1}^D \matr{u}_d^\top \Sigma \matr{u}_d.
+\]
+
+\todo[inline]{is J the error? appears so because from K+1 to D we get the dimensions that are removed?!}
+
+\section{Matrix Viewpoint}
+Let the data \(\matr{x}_i\) be represented as a matrix \(\matr{X} = [\matr{x}_1, \matr{x}_2, \ldots, \matr{x}_N] \in \R^{D \times N}\). The corresponding mean-centered data is \[\bar{\matr{X}} = \matr{X} - \matr{M}\] where \[\matr{M} = [\underbrace{\bar{\matr{x}}, \bar{\matr{x}}, \ldots, \bar{\matr{x}}}_{\mathclap{N \text{ times}}}] \in R^{D \times N}.\]
+
+Projecting \(\bar{\matr{X}}\) into \(\matr{U}_K = [\matr{u}_1, \matr{u}_2, \ldots, \matr{u}_K]\) (\(\matr{u}_i\) is the eigenvector with the \(i\)-th highest eigenvalue) is represented by \[
+\underbrace{\bar{\matr{Z}}}_{\mathclap{K \times N}} = \underbrace{\matr{U_K^\top}}_{\mathclap{K \times D}} \cdot \underbrace{\bar{\matr{X}}}_{\mathclap{D \times N}}.
+\]
+
+To approximate \(\bar{\matr{X}}\), we return to the original basis with \[
+\tilde{\bar{\matr{X}}} = \matr{U}_K \cdot \tilde{\matr{Z}}_K.
+\]
+
+\todo[inline]{Unclear what this last part exactly tries to explain...}
