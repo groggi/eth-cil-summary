@@ -6,11 +6,16 @@
 \todo[inline]{lecture02, slides 8-12}
 
 \section{Probability}
-\begin{notation}
-\(\Omega\) denotes the sample space and \(A \subseteq \Omega\) an event.
-\end{notation}
 
-\begin{definition}[Probability]
+\begin{definition}[Sample Space]
+A \textit{sample space}, denoted by \(\Omega\), is the set of outcomes of a random experiment.
+\end{definition}
+
+\begin{definition}[Events]
+A subset \(A \subseteq \Omega\) is called an \textit{event}
+\end{definition}
+
+\begin{definition}[Probability Distribution]
 The function \(p: \Omega \to \R\) is a \textit{probability distribution} if it satisfies the following three axioms:
 \begin{enumerate}
 \item \(\forall A \subseteq \Omega: p(A) \geq 0\)
@@ -18,6 +23,12 @@ The function \(p: \Omega \to \R\) is a \textit{probability distribution} if it s
 \item If \(A_1, A_2, \ldots\) are disjoint then \(p(\bigcup_{i=1}^\infty A_i) = \sum_{i=1}^\infty p(A_i)\)
 \end{enumerate}
 \end{definition}
+
+\begin{notation}
+\(p(A) \equiv \operatorname{Pr}[A]\)
+\end{notation}
+
+Usually, we do not deal directly with sample spaces. Instead, \textit{random variables} with \textit{probability distributions} are used.
 
 \begin{definition}[Random Variable]
 Random variables are a mapping \begin{align*}
@@ -34,6 +45,194 @@ that assigns an element \(X(\omega) \in \K\) to each outcome \(\omega\).
 \end{itemize}
 \end{notation}
 
+If \(\mathcal{X}\) denotes the set of values a random variable \(X\) can take, we can define probabilities directly on \(\mathcal{X}\).
+
+\begin{example}
+If the random variable \(X\) denotes the number of heads in two coin tosses, we can set \(\mathcal{X} = \{0, 1, 2\}\). For this example we get:
+\begin{align*}
+X(HH) &= 2\\
+X(TH) &= X(HT) = 1\\
+X(TT) &= 0
+\end{align*}
+and
+\begin{align*}
+p(X = 0) &:= p(\{TT\})\\
+p(X = 1) &:= p(\{HT, TH\})\\
+p(X = 2) &:= p(\{HH\}).
+\end{align*}
+\end{example}
+
+\begin{definition}[Expectation]
+For a random variable \(X\) the \textit{expectation} is defined as
+\[
+\mu_X := E[X] := \sum_{x \in \mathcal{X}} x \cdot P(x).
+\]
+
+This can also be defined for a function \(f\) of \(X\):
+\[
+E[f(X)] := \sum_{x \in \mathcal{X}} f(x) P(x)
+\]
+\end{definition}
+
+\begin{remark}
+The expectation of a random variable is \textit{not} the same as the most likely value \(\max_{x \in \mathcal{X}} P(x)\)
+\end{remark}
+
+\begin{definition}[Variance]
+For a random variable \(X\) the \textit{variance} is defined by
+\[
+\operatorname{Var}[X] := E[(X - \mu_X)^2] := \sum_{x \in \mathcal{X}} (x - \mu_X)^2 P(x).
+\]
+
+It holds that \(\operatorname{Var}[X] \geq 0\).
+\end{definition}
+
+\begin{definition}[Standard Deviation]
+For a random variable \(X\) the \textit{standard deviation} is defined as
+\[
+\sigma_X := \sqrt{\operatorname{Var}[X]}.
+\]
+\end{definition}
+
+\subsection{Discrete Random Variables}
+\begin{definition}[Discrete Random Variable]
+\(X\) is a \textit{discrete random variable} iff \(\mathcal{X}\) is a finite or countably infinite set.
+\end{definition}
+
+\begin{definition}[Probability Mass Function]
+The probability mass function for discrete random variables is \[
+P(x) := Pr[X = x]
+\]
+
+for which the following must hold:
+\begin{itemize}
+\item Non-negativity: \(\forall x \in \mathcal{X}: P(x) \geq 0\)
+\item Normalization: \(\sum_{x \in \mathcal{X}} P(x) = 1\)
+\end{itemize}
+\end{definition}
+
+\subsection{Continuous Random Variables}
+\begin{definition}[Continuous Random Variables]
+\(X\) is a \textit{continuous random variable} iff \(\mathcal{X}\) is an uncountably infinite set.
+\end{definition}
+
+The corresponding probability distribution \(p(x)\) is called a \textit{probability density function} and has the following properties:
+\begin{itemize}
+\item Non-negativity: \(\forall x \in \mathcal{X}: p(x) \geq 0\)
+\item Normalization: \(\int_\mathcal{X} p(x) dx = 1\)
+\end{itemize}
+
+For continuous random variables: \[p(x) \neq Pr[X = x].\] To get the probability we have to integrate: \[
+Pr[a < X < b] = \int_a^b p(x) dx.
+\]
+
+\subsection{Joint Distributions}
+Let \(X \in \mathcal{X}\) and \(Y \in \mathcal{Y}\) be two random variables.
+
+\begin{definition}[Joint Distribution]
+The \textit{joint distribution} of \(X\) and \(Y\) is defined as \[
+P(x, y) := Pr[X = x, Y = y]
+\]
+
+for which the following must hold:
+\begin{itemize}
+\item Non-negativity: \(\forall x \in \mathcal{X}, y \in \mathcal{Y}: P(x, y) \geq 0\)
+\item Normalization: \(\sum_{x \in \mathcal{X}} \sum_{y \in \mathcal{Y}} P(x, y) = 1\)
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Marginal Distribution]
+\textit{Marginal distribution} for \(X\) is defined as \[
+P(x) := Pr[X = x] := \sum_{y \in \mathcal{Y}} P(x, y)
+\]
+\end{definition}
+
+\begin{definition}[Conditional Distribution]
+Knowing that \(Y\) has a known value \(y\) the conditional distribution of \(X\) is defined as \[
+P(x|y) := Pr[X = x|Y = y] := \frac{P(x,y)}{P(y)},\quad \text{defined if } P(y) > 0
+\]
+\end{definition}
+
+\begin{remark}[Chain Rule]
+A joint distribution, by definition of conditional distributions, can always be written as a product of conditionals: \[P(x,y) = P(x|y)P(y)\]
+\end{remark}
+
+\begin{definition}[Bayes' Rule]
+Using the conditional distribution and chain rule we get the \textit{Bayes' Rule}:
+\[
+P(x|y) = \frac{P(y|x)P(x)}{P(y)}
+\]
+\end{definition}
+
+\begin{definition}[Independence]
+Two random variables \(X\) and \(Y\) are \textit{independent}, if knowing the value of \(X\) does not give any information about the distribution of \(Y\) and vice versa:
+\[
+P(x|y) = P(x) \Leftrightarrow P(y|x) = P(y)
+\]
+
+Equivalently, \(X\) and \(Y\) are independent if their joint distribution factorizes:
+\[
+P(x,y) = P(x|y)P(y) = P(x)P(y)
+\]
+\end{definition}
+
+\begin{definition}[Independent and Identically Distributed (IID)]
+Random variables \(X_1, X_2, \ldots, X_n\) are independent and identically distributed if
+\begin{itemize}
+\item each of them has the same (marginal) distribution
+\item they are mutually independent
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+If \(X_1, X_2, \ldots, X_n\) are IID, then \[
+P(x_1, \ldots, x_n) = P(x_1) \cdots P(x_n) = \prod_{i=1}^n P(x_i)
+\]
+\end{remark}
+
+\subsection{Multidimensional Moments}
+Let \(\matr{X} = [X_1, \ldots, X_n]^\top\) be a vector of random variables.
+
+\begin{definition}[Expectation]
+The expectation of \(\matr{X}\) is defined as
+\[
+E[\matr{X}] := [E[X_1], \ldots, E[X_n]]^\top.
+\]
+\end{definition}
+
+\begin{definition}[Covariance]
+For random variables \(X_i\) and \(X_j\) the covariance is defined as
+\[
+\operatorname{Cov}[X_i, X_j] := E[(X_i - \mu_{X_i})(X_j - \mu_{X_j})].
+\]
+
+And has the following properties:
+\begin{itemize}
+\item \(\operatorname{Cov}[X_i, X_i] = \operatorname{Var}[X_i]\)
+\item If \(X_i, X_j\) are independent: \(\operatorname{Cov}[X_i, X_j] = 0\)
+\item \(\operatorname{Cov}[X_i, X_j] > 0\) means roughly that \(X_i\) and \(X_j\) increase and decease together
+\item \(\operatorname{Cov}[X_i, X_j] < 0\) roughly means that when \(X_i\) increases \(X_j\) decreases (and vice versa)
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Covariance Matrix]
+For a vector of random variables \(\matr{X} = [X_1, \ldots, X_n]^\top\) the \textit{covariance matrix} is a \(n \times n\) matrix as follows:
+\[
+\matr{\Sigma}_{\matr{X}} = \begin{bmatrix}
+\operatorname{Var}[X_1] & \operatorname{Cov}[X_1, X_2] & \cdots & \operatorname{Cov}[X_1, X_n]\\
+\operatorname{Cov}[X_2, X_1] & \operatorname{Var}[X_2] & \cdots & \operatorname{Cov}[X_2, X_n]\\
+\vdots & \vdots & \ddots & \vdots\\
+\operatorname{Cov}[X_n, X_1] & \operatorname{Cov}[X_n, X_2] & \cdots & \operatorname{Var}[X_n]
+\end{bmatrix}
+\]
+
+\begin{itemize}
+\item The diagonal elements of \(\matr{\Sigma}_{\matr{X}}\) are the variances of each random variable because of \(\operatorname{Cov}[X_i, X_i] = \operatorname{Var}[X_i]\)
+\item \(\matr{\Sigma}_{\matr{X}}\) is symmetric because of \(\operatorname{Cov}[X_i, X_j] = \operatorname{Cov}[X_j, X_i]\)
+\item \(\matr{\Sigma}_{\matr{X}}\) is positive semi-definite
+\end{itemize}
+\end{definition}
+
 \subsection{Categorical Distribution}
 \begin{itemize}
 \item Is a discrete distribution over \(K\) events.
@@ -47,7 +246,7 @@ that assigns an element \(X(\omega) \in \K\) to each outcome \(\omega\).
 
 \begin{definition}[Probability Mass Function]
 The probability mass function is defined by \[
-p(\matr{z} | \matr{\pi}) = \prod_{k=1}^K \pi_k^{z_k}
+P(\matr{z} | \matr{\pi}) = \prod_{k=1}^K \pi_k^{z_k}
 \]
 where \(\pi_k\) represents the probability of seeing element \(k\), \(\matr{z}\) is a random variable in vector coding and the following holds:
 \begin{itemize}
@@ -69,6 +268,13 @@ p(x|\mu, \sigma) = \mathcal{N}(x|\mu, \sigma) = \frac{1}{\sqrt{2 \pi} \cdot \sig
 \end{itemize}
 \end{definition}
 
+\begin{remark}\hfill
+\begin{itemize}
+\item \(E[X] = \mu\)
+\item \(\operatorname{Var}[X] = \sigma^2\)
+\end{itemize}
+\end{remark}
+
 \begin{definition}[Probability for Gaussian Distribution]
 The probability for \(X \in [a, b]\) is given by the integral \[
 P(a < X < b) = \int_a^b p(x) dx = \frac{1}{\sqrt{2 \pi} \cdot \sigma} \int_a^b \exp \left\lbrace -\frac{(x - \mu)^2}{2\sigma^2} \right\rbrace dx.
@@ -78,11 +284,20 @@ P(a < X < b) = \int_a^b p(x) dx = \frac{1}{\sqrt{2 \pi} \cdot \sigma} \int_a^b \
 \subsection{Multivariate Gaussian Distribution}
 Generalizes the (univariate) Gaussian distribution to higher dimensions. The sample space is now \(\matr{\mathcal{X}} \subseteq \R^D\). A random vector\footnote{a random variable in vector coding} \(\matr{X} = (X_1, \ldots, X_D)^\top\) has a multivariate normal distribution if every linear combination of its components (i.e. \(Y = a_1 X_1 + \cdots + a_D X_D\)) has a univariate normal distribution.
 
+\begin{remark}
+\(E[\matr{X}] = \matr{\mu}\)
+\end{remark}
+
 \begin{definition}
 \[
 p(\matr{x}|\matr{\mu}, \matr{\Sigma}) = \mathcal{N}(\matr{x}|\matr{\mu}, \matr{\Sigma}) :=
 \frac{1}{(\sqrt{2\pi})^D |\matr{\Sigma}|^\frac{1}{2}} \exp \left( -\frac{1}{2}(\matr{x} - \matr{\mu}^\top) \matr{\Sigma}^{-1} (\matr{x} - \matr{\mu}) \right)
 \]
+
+\begin{itemize}
+\item \(\matr{\Sigma}\) is the covariance matrix of \(\matr{X}\)
+\item \(|\matr{\Sigma}|\) is the covariance matrix's determinant
+\end{itemize}
 \end{definition}
 
 \todo[inline]{lecture04 slide 38, not clear what this is. Maybe read Wikipedia article regarding this topic?}
