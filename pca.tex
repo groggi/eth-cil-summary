@@ -131,3 +131,58 @@ To approximate \(\bar{\matr{X}}\), we return to the original basis with \[
 \]
 
 \todo[inline]{Unclear what this last part exactly tries to explain...}
+
+\section{Performing PCA}
+Let \(\matr{X} \in \R^{D \times N}\) be a given observation. After performing PCA we're interested in \(\tilde{\matr{X}} \in \R^{K \times N}\) with \(K \leq K\) such that \(\tilde{\matr{X}}\) is the low-dimensional representation of \(\matr{X}\).
+
+\subsection{Step 1: Calculate the Empirical Mean}
+The empirical mean is calculated by \[
+\bar{\matr{x}} = \frac{1}{N} \sum_{n=1}^N \matr{x}_n.
+\]
+
+This calculates the observed data's mean in each dimension by summing up all the data for each dimension (vector addition) and dividing it by the amount of measurements \(\N\).
+
+With the empirical mean we can construct \(\matr{M} = [\underbrace{\matr{x}, \matr{x}, \ldots, \matr{x}}_{N \text{ times}}]\).
+
+\subsection{Step 2: Center the Data}
+Now we have to center the data (relocate the data around \(\matr{0}\)) by subtracting the empirical mean from each measurement: \[
+\bar{\matr{X}} = \matr{X} - \matr{M}
+\]
+
+\subsection{Step 3: Computing the Covariance Matrix}
+\[
+\matr{\Sigma} = \frac{1}{N} \sum_{n=1}^N (\matr{x}_n - \bar{\matr{x}}) (\matr{x}_n - \bar{\matr{x}})^\top = \frac{1}{N} \underbrace{\bar{\matr{X}} \bar{\matr{X}}^\top}_{\mathclap{\text{Scatter Matrix } S}}
+\]
+
+\todo[inline]{Find answer to question in tutorial02 slide 5}
+
+\subsection{Step 4: Eigenvalue Decomposition}
+Now compute the eigenvalue decomposition of the covariance matrix: \[
+\matr{\Sigma} = \matr{U \Lambda U}^\top.
+\]
+
+After that we sort \(\matr{\Lambda}\), and change \(\matr{U}\) accordingly, such that for \(\matr{\Lambda} = \operatorname{diag}[\lambda_1, \ldots, \lambda_D]\) \(\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_D\) holds. Note that the \(i\)-th column of \(\matr{U}\) contains the \(i\)-th eigenvector which corresponds to the \(i\)-th eigenvalue in \(\matr{\Lambda}\).
+
+Because \(\matr{\Sigma}\) is a real and symmetric matrix the eigenvalue decomposition will result in \(\matr{U}\) being an orthogonal matrix with orthonormal entries.
+
+\todo[inline]{Find answer to question tutorial02 slide 5}
+
+\subsection{Step 5: Model Selection}
+Now we have to pick \(K \leq D\) according to our model. From now on we will only keep the \(K\) largest eigenvalues as those capture the maximal variance of the data.
+
+\subsection{Step 6: Transform the Data onto the new Basis with \(K\) Dimensions}
+\[
+\R^{K \times N} \ni \bar{\matr{Z}} = \matr{U}_K^\top \bar{\matr{X}}
+\]
+
+Here \(\matr{U}_K\) denotes the eigenvector matrix from the eigenvalue decomposition, after sorting the eigenvalues in decreasing order, containing only the first \(K\) eigenvectors.
+
+\subsection{Step 7: Reconstruct to Original Basis}
+Now we reconstruct the transformed data by transforming it back to the original basis
+\[
+	\tilde{\bar{\matr{X}}} = \matr{U}_K \bar{Z}
+\]
+and reversing the shift introduced by centering the data
+\[
+	\tilde{\matr{X}} = \tilde{\bar{\matr{X}}} + \matr{M}.
+\]
