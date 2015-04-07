@@ -1,0 +1,150 @@
+\chapter{Data Clustering via \(K\)-Means}
+
+Given a set of data points \(\matr{x}_1, \ldots, \matr{x}_N \in \R^D\). The goal is to find a \textit{meaningful partition} of these data points. Therefore, we're interested in labeling each of the data points with a unique label using \(\pi: \{1, \ldots, N\} \to \{1, \ldots, K\}\) or \(\pi: \R^D \to \{1, \ldots, K\}\). The numbering of clusters is arbitrary and the \(k\)-th cluster can be recovered by \(\pi^{-1}(k) \subseteq \{1, \ldots, N\}\) or \(\pi^{-1}(k) \subseteq R^D\).
+
+\section{Vector Quantization}
+Partitioning of the space \(\R^D\). Each cluster is represented by a \textit{centroid} \(\matr{u}_k \in \R^D\). Mapping a data point \(\matr{x}\) to a cluster is done via nearest centroid rule, i.e. \(\pi(\matr{x}) = \argmin_{k=1,\ldots,K} \|\matr{u}_k - \matr{x}\|_2\).
+
+\section{Objective Function for \(K\)-Means}
+The clustering problem can be formalized as an optimization problem: Find centroids \(\matr{u}_k \in \R^D\) and an assignment function \(\pi\) of data points to clusters, which minimizes a \textit{loss function}/\textit{distortion}, e.g. the squared Euclidean norm.
+
+Useful notation: represent \(\pi\) by a indicator matrix \(\matr{Z}\) defined by
+\[
+z_{k, n} := \begin{dcases*}
+1 & if \(\pi(\matr{x}_n) = k\)\\
+0 & otherwise
+\end{dcases*}
+\]
+
+\begin{definition}[\(K\)-Means Objective Function]
+\[
+J(\matr{U}, \matr{Z}) = \sum_{n=1}^N \sum_{k=1}^K z_{k, n} \| \matr{x}_n - \matr{u}_k \|_2^2 = \| \matr{X} - \matr{UZ} \|_F^2
+\]
+
+with \(\matr{X} = [\matr{x}_1, \ldots, \matr{x}_N] \in \R^{D \times N}\) and \(\matr{U} = [\matr{u}_1, \ldots, \matr{u}_K] \in \R^{D \times K}\)
+\end{definition}
+
+\begin{lemma}[\(K\)-Means Objective Function with Euclidean Metric]
+\[
+J(\matr{U}, \matr{Z}) = \sum_{n=1}^N \sum_{k=1}^K z_{k, n} \| \matr{x}_n - \matr{u}_k \|_F^2 = \| \matr{X} - \matr{UZ} \|_2^2
+\]
+\end{lemma}
+
+\begin{itemize}
+\item Determining optimal \textit{centroids} (\(\matr{U}\)) is easy if the assignments (\(\matr{Z}\)) are given.
+\item Determining optimal \textit{assignments} (\(\matr{Z}\)) is easy if the \textit{centroids} (\(\matr{U}\)) are given.
+\end{itemize}
+
+\subsection{Optimal Assignment for Given Centroids}
+Goal is to compute the optimal assignments (\(\matr{Z}\)), given the centroids (\(\matr{U}\)). Observe that each data point contributes to exactly one term in outer sum. Also note that \(\matr{Z}\) encodes an assignment, i.e. we have \(\sum_{k=1}^K z_{k, n} = 1 \quad \forall n \in \{1, \ldots, N\}\) (each data point is mapped to exactly one cluster).
+
+\begin{enumerate}
+\item Minimize each column of \(\matr{Z}\) separately: \[
+\matr{z}_{\cdot, n}^\ast = \argmin_{z_{1, n}, \ldots, z_{K, n}} \sum_{k=1}^K z_{k, n} \| \matr{x}_n - \matr{u}_k \|_2^2
+\]
+
+\item Optimum is attained by mapping to the closest centroid: \[
+z_{k, n}^\ast(\matr{U}) = \begin{dcases*}
+1 & if \(k = \argmin_l \| \matr{x}_n - \matr{u}_l \|_2\)\\
+0 & otherwise
+\end{dcases*}
+\]
+\end{enumerate}
+
+\subsection{Optimal Centroids for Given Assignment}
+Goal is to compute the optimal centroids (\(\matr{U}\)) for a given assignment (\(\matr{Z}\)). The idea is to compute the gradient and set it to zero as a necessary optimality condition).
+
+\begin{enumerate}
+\item Look at the (partial) gradient for every centroid \(\matr{u}_k\): \[
+\nabla_{\matr{u}_k} J(\matr{U}, \matr{Z}) = \sum_{n=1}^N z_{k, n} \nabla_{\matr{u}_k} \| \matr{x}_n - \matr{u}_k \|_2^2 = -2 \sum_{n=1}^N z_{k, n} (\matr{x}_n - \matr{u}_k)
+\]
+
+\item Set the gradient to zero: \[
+\nabla_{\matr{U}} J(\matr{U}, \matr{Z}) \overset{!}{=} 0 \Rightarrow \matr{u}_k^\ast(\matr{Z}) = \frac{\sum_{n=1}^N z_{k, n} \matr{x}_n}{\sum_{n=1}^N z_{k,n}}.\quad \text{if } \sum_{n=1}^N z_{k,n} > 0
+\]
+\end{enumerate}
+
+\subsection{\(K\)-Means Algorithm}
+\begin{algorithm}[H]
+\caption{\(K\)-Means Algorithm}
+\begin{algorithmic}[1]
+\Procedure{k-means}{$\matr{X}$, $K \leq N$}
+\State initialize $\matr{U}$ with $k$ distinct random data points from $\matr{X}$
+\State initialize $\matr{Z} \gets \matr{Z}^\ast(U)$
+\Repeat
+\State $\matr{U} \gets \matr{U}^\ast(Z)$
+\State $\matr{Z}^\text{new} \gets \matr{Z}^\ast(U)$
+\State numChanges $\gets \frac{1}{2} \|\matr{Z} - \matr{Z}^\text{new}\|_0$
+\State $\matr{Z} \gets \matr{Z}^\text{new}$
+\Until{numChanges is $0$}
+\Return $(\matr{U}, \matr{Z})$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+There are different initialization strategies, here we just use random points.
+
+\subsubsection{Algorithm Analysis}
+\begin{itemize}
+\item Each iteration costs \(\mathcal{O}(KND)\)
+
+\item \(K\)-means convergence is guaranteed \todo{insert reason from exercise}
+
+\item \(K\)-means optimizes a non-convex objective \todo{insert reason from exercise}. Hence we're not guaranteed to find the global optimum!
+
+\item Finds a local optimum \((\matr{U}, \matr{Z})\) in the following sense:
+\begin{itemize}
+\item for each \(matr{Z}'\) with \(\frac{1}{2} \| \matr{Z} - \matr{Z}' \|_0 = 1\) (differs in one assignment)
+\item \(J(\matr{U}^\ast (\matr{Z}'), \matr{Z}') \geq J(\matr{U}, \matr{Z})\)
+\item may gain by changing assignments of \(\geq 2\) points
+\end{itemize}
+
+\item \(K\)-means algorithm can be used to compress data:
+\begin{itemize}
+\item if \(K < N\) with information loss
+\item store only centroids and the assignments
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Problems with Algorithm}
+\begin{itemize}
+\item Non-convex objective, local minima, sensitive to initialization
+\item Not appropriate for non-Euclidean data (need to use other distances)
+\item Optimal number of clusters \(K\) is unknown. We have to find a balance between total compression (\(K = 1\)) and no loss of information (\(K = N\)).
+\end{itemize}
+
+\section{Choosing the Number of Clusters}
+Choosing the number of clusters is also referred to as \textit{model order selection} problem or \textit{model validation}.
+
+\begin{definition}[Clustering Stability]
+Repeatedly sample data from the same generation process. ``Good'' algorithms should return clusterings that do not vary much.
+\end{definition}
+
+For model selection for \(K\)-means choose the number of clusters \(K\) such that stability is ensured.
+
+\subsection{Testing Clustering Stability}
+For a given set of data points and a given number of clusters we can perform the following (high-level) stability test:
+\begin{itemize}
+\item Generate a perturbed version of the data (e.g. add noise, remove samples)
+\item Perform clustering algorithm on all data versions
+\item Compute pairwise distance between all clusterings using an appropriate distance measure
+\item Compute the instability as the mean distance between all clusterings
+\end{itemize}
+
+The above steps should be repeated for different numbers of clusters and we choose the one that minimizes the instability.
+
+The \textit{distance} between two clusterings \(\mathcal{C}, \mathcal{C}'\) of the same data points is defined as follows:
+\begin{itemize}
+\item Compute the amount of points on which the two clusterings agree or disagree
+\item Must be repeated over all cluster labelings as they are arbitrary. This can be done with a permutation function \(\Pi\) 
+\end{itemize}
+
+\begin{definition}[Distance of two Clusterings]
+Therefore we get the following distance function for two clusterings \(\mathcal{C}, \mathcal{C}'\): \[
+d(\mathcal{C}, \mathcal{C}') := \min_{\Pi} \frac{1}{2} \| \matr{Z} - \Pi(\matr{Z}') \|_0
+\]
+
+where \(\Pi(\matr{Z}')\) is one of the possible row permutations of \(\matr{Z}'\).
+\end{definition}
+
+\todo[inline]{... lecture04 slide 24ff}

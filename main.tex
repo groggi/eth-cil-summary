@@ -12,8 +12,11 @@
   enumitem,
   hyperref,
   todonotes,
-  wasysym
+  wasysym,
+  algorithm
 }
+
+\usepackage[noend]{algpseudocode}
 
 %
 % utf8 fix
@@ -61,6 +64,11 @@
 \newcommand{\matr}[1]{\mathbf{#1}}
 
 %
+% math symbols/functions
+%
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%
 % section settings
 %
 \setcounter{secnumdepth}{3}
@@ -90,5 +98,6 @@
 \input{pca.tex}
 \input{svd.tex}
 \input{statprob.tex}
+\input{kmeans.tex}
 
 \end{document}
