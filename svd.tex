@@ -1,0 +1,179 @@
+\chapter{Singular Value Decomposition (SVD)}
+
+\begin{definition}
+Every rectangle, real or complex matrix \(\matr{A}\) has an SVD decomposition:
+\[
+\underbrace{\matr{A}}_{M \times N} = \underbrace{\matr{U}}_{M \times M} \underbrace{\matr{D}}_{M \times N} \underbrace{\matr{V}^\top}_{N \times N}
+\]
+
+\begin{itemize}
+\item \(\matr{U}\) is an orthogonal matrix, i.e. \(\matr{U}^\top \matr{U} = \matr{U} \matr{U}^\top = \matr{I}\).
+
+\item \(\matr{D}\) is a diagonal matrix padded with \(\max(M, N) - \min(M, N)\) zero rows or columns.
+
+\item \(\matr{V}\) is an orthogonal matrix, i.e. \(\matr{V}^\top \matr{V} = \matr{V} \matr{V}^\top = \matr{I}\).
+
+\end{itemize}
+\end{definition}
+
+\section{Properties}
+
+\subsection{Singular Values}
+\begin{itemize}
+\item Elements in the diagonal of \(\matr{D}\) are called the \textit{singular values}. They are denoted by \(\sigma_i := d_{i,i},\ i \in \{1, \ldots, \min(M,N)\}\). Accordingly \(\matr{D} = \operatorname{diag}(\sigma_1, \ldots, \sigma_{\min(M,N)})\).
+
+\item By convention the singular values are ordered in decreasing order, i.e. \(\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_{\min(M,N)} \geq 0\).
+
+\item The rank of \(\matr{A}\) corresponds to the number of non-zero singular values.
+\end{itemize}
+
+\subsection{Singular Vectors}
+\begin{itemize}
+\item The first \(\operatorname{rank}(\matr{A})\) columns of \(\matr{U}\) are the \textit{left singular vectors}.
+\item The left singular vectors are an orthonormal basis for the column space of \(\matr{A}\).
+\item The first \(\operatorname{rank}(\matr{A})\) rows of \(\matr{V}^\top\) are the \textit{right singular vectors}.
+\item The right singular vectors are an orthonormal basis for the row space of \(\matr{A}\).
+\end{itemize}
+
+\subsection{Algebraic Relationships}
+\begin{itemize}
+\item By multiplying the SVD equation by \(\matr{V}\) we get \[
+\matr{AV} = \matr{UD} \ \Leftrightarrow \ \matr{A} \matr{v}_i = \sigma_i \matr{u}_i \quad \forall i \leq \min(M,N)
+\]
+
+\item Similarly \[
+\matr{A}^\top \matr{U} = \matr{U} \matr{D}^\top \ \Leftrightarrow \ \matr{A}^\top \matr{u}_i = \sigma_i \matr{v}_i \quad \forall i \leq \min(M, N)
+\]
+
+\begin{itemize}
+\item in case of \(M = N\) and \(\matr{U} = \matr{V}\), i.e. \(\matr{A}\) is symmetric, we get the eigendecomposition. In this case \(\matr{u}_i = \matr{v}_i\) are eigenvectors.
+\end{itemize}
+\end{itemize}
+
+\subsection{Compact SVD}
+For a rank \(R\) matrix \(\matr{A}\) we're often only interested in the singular vectors corresponding to non-zero singular values. In this case a more compact SVD is possible: \[
+\underbrace{\matr{A}}_{M \times N} = \underbrace{\bar{\matr{U}}}_{M \times R} \underbrace{\bar{\matr{D}}}_{M \times R} \underbrace{\bar{\matr{V}}^\top}_{R \times R}.
+\]
+
+This representation is exact as excess columns of \(\matr{U}\) and \(\matr{V}\) are multiplied with zeros in \(\matr{D}\).
+
+This representation removes information about the basis fo the null space of \(\matr{A}\).
+
+\section{SVD for Collaborative Filtering}
+\begin{definition}[Recommender Systems]
+A recommender system analyses  patterns of user's interest in items (movies, books, etc.) to provide personalized recommendations that suit a user's previously observed interest. 
+\end{definition}
+
+\begin{definition}[Collaborative Filtering]
+Collaborative filtering is the approach to design recommender systems by exploiting the collective data from many users and generalizing across users and items.
+\end{definition}
+
+\subsection{Movie Example}
+Let \(\matr{A}\) correspond to users ranking of movies. The ranking is from \(0\) (lowest) to \(5\) (highest). Rows represent users and columns movies.
+
+Performing SVD on \(\matr{A}\) results in:
+\begin{itemize}
+\item \(K\) dimensional latent\footnote{hidden, not visible} concept space
+\item \(\matr{U}\): Users-to-concept affinity matrix
+\item \(\matr{V}\): Movies-to-concept similarity matrix
+\item \(\matr{D}\): Diagonal elements represent the ``expressiveness'' of each concept in the data
+\end{itemize}
+
+\section{Singular Values and Matrix Norms}
+\subsection{Frobenius Norm}
+\begin{definition}[Frobenius Norm]
+\[
+\| \matr{A} \|_F := \sqrt{\sum_{i=1}^M \sum_{j=1}^N a_{i,j}^2} = \sqrt{\operatorname{trace}(\matr{A}^\top \matr{A})} = \sqrt{\sum_{i=1}^{\min(M,N)} \sigma_i^2}
+\]
+\end{definition}
+
+The Frobenius norm therefore only depends on the singular values of \(\matr{A}\) which follows from the cyclic nature of \(\operatorname{trace}\), i.e. \(\operatorname{trace}(\matr{XYZ}) = \operatorname{trace}(\matr{ZXY})\):
+\begin{align*}
+\operatorname{trace}(\matr{A}^\top \matr{A}) &=
+\operatorname{trace}(\matr{V} \matr{D}^2 \matr{V}^\top)\\
+&= \operatorname{trace}(\matr{D}^2)\\
+&= \operatorname{trace}(\operatorname{diag}(\sigma_1^2, \ldots, \sigma_{\min(M, N)}^2))\\
+&= \sqrt{\sum_{i=1}^{\min(M,N)} \sigma_i^2}
+\end{align*}
+
+\subsection{Induced \(p\)-Norms}
+\begin{definition}[Induced \(p\)-Norms]
+\[
+\| \matr{A} \|_p := \sup \{ \| \matr{Ax} \|_p \ : \ \| \matr{x} \|_p = 1 \}
+\]
+\end{definition}
+
+\begin{definition}[Matrix \(2\)-Norm]
+This norm corresponds to the largest singular value.
+
+\[
+\| \matr{A} \|_2 := \sup \{ \| \matr{Ax} \|_2 \ : \ \| \matr{x} \|_2 = 1 \} = \sigma_1
+\]
+\end{definition}
+
+\section{Eckart-Young Theorem}
+The reduced SVD provides an optimal low rank approximation in regard to the Frobenius norm.
+
+Let the SVD of \(\matr{A} \in \R^{M \times N}\) be given by \(\matr{A} = \matr{UDV}^\top\) and  \(K \leq \operatorname{rank}(\matr{A})\). Further we define \(\matr{A}_K\) by \[
+\matr{A}_K :- \sum_{i=1}^K \sigma_i \matr{u}_i \matr{v}_i^\top
+\]
+from which follows that \(\operatorname{rank}(\matr{A}_L) = K\).
+
+Looking at \[
+\min_{\operatorname{rank}(\matr{B}) = K} \|\matr{A} - \matr{B}\|_F^2 = \|\matr{A} - \matr{A}_K\|_F^2 = \sum_{k = K+1}^{\operatorname{rank}(\matr{A})} \sigma_k^2
+\]
+results in the observation that \(\matr{A}_K\) is the closest \(\operatorname{rank} K\) approximation to \(\matr{A}\) in the Forbenius matrix sense.
+
+The matrix \(\matr{A}_K\) is also the optimal approximation in the sense of the Euclidean matrix norm:
+\[
+\min_{\operatorname{rank}(\matr{B}) = K} \|\matr{A} - \matr{B}\|_2 = \|\matr{A} - \matr{A}_K\|_2 = \sigma_{K + 1}
+\]
+
+\section{Eigendecomposition with SVD}
+The SVD of \(\matr{A}\) can be used to perform an eigendecomposition of \(\matr{AA}^\top\). In this case the columns of \(\matr{U}\) are the eigenvectors of \(\matr{AA}^\top\) because of 
+\[
+\matr{AA}^\top = \matr{UDV}^\top \matr{VDU}^\top = \matr{UD}^2\matr{U}^\top.
+\]
+
+Similarly the rows of \(\matr{V}^\top\) (or columns of \(\matr{V}\)) are the eigenvectors of \(\matr{AA}^\top\) because of
+\[
+\matr{AA}^\top = \matr{VDU}^\top \matr{UDV}^\top = \matr{VD}^2\matr{V}^\top.
+\]
+
+\todo[inline]{lecture03 slide 32, ``Do It Yourself SVD'' relevant?}
+
+\section{SVD for Symmetric Matrices}
+\begin{theorem}
+If \(\matr{S}\) is a real and symmetric matrix, i.e. \(\matr{S} = \matr{S}^\top\), then \(\matr{S} = \matr{UDU}^\top\). Where the columns of \(\matr{U}\) are the eigenvectors of \(\matr{S}\) and \(\matr{D}\) is a diagonal matrix with the eigenvalues of \(\matr{S}\).
+\end{theorem}
+
+\begin{proof}
+Let \(\matr{U}\) be the matrix of eigenvectors places in the columns, i.e. \(\matr{U} = [\matr{u}_1, \ldots, \matr{u}_N]\), then we can write \(\matr{SU} = \matr{UD}\) or \[
+[\matr{Su}_1, \ldots, \matr{Su}_N] = [\sigma_1 \matr{u}_1, \ldots, \sigma_N \matr{u}_N]
+\]
+by definition of the eigenvectors.
+
+Therefore \(\matr{S} = \matr{UDU}^{-1}\), and since \(\matr{U}\) is orthogonal we get \(\matr{U}^{-1} = \matr{U}^\top\) and therefore \(\matr{S} = \matr{UDU}^\top\).
+\end{proof}
+
+\section{Relation Between SVD and PCA}
+Let \(\matr{A}\) be a \(M \times N\) matrix.
+\begin{itemize}
+\item The matrix \(\matr{AA}^\top\) is a symmetric matrix describing the similarity between the \textbf{rows} of the matrix \(\matr{A}\).
+
+The eigenvectors \([\matr{u}_1, \ldots, \matr{u}_n]\) of \(\matr{AA}^\top\)...
+\begin{itemize}
+\item correspond to the \textit{principle component} in a PCA of \(\matr{A}\). They're equal up to a constant, assuming \(\matr{A}\) is centered.
+\item are the \textit{left singular vectors} in the SVD decomposition of \(\matr{A}\).
+\end{itemize}
+
+\item Similarly, \(\matr{AA}^\top\) describes the similarity between the \textbf{columns} of the matrix \(\matr{A}\) and the eigenvectors of \(\matr{AA}^\top\) are the \textit{right singular vectors} in the SVD decomposition of \(\matr{A}\).
+
+\item The squared singular values of \(\matr{A}\) are the eigenvalues of \(\matr{AA}^\top\) and \(\matr{A}^\top \matr{A}\).
+\end{itemize}
+
+Reasons to use SVD instead of PCA:
+\begin{itemize}
+\item In case of very high dimensional data the covariance matrix \(\matr{\Sigma}\) will have a squared dimension size.
+\item Efficient algorithms available for SVD
+\end{itemize}
