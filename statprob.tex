@@ -4,3 +4,85 @@
 \todo[inline]{Gamma Distribution: lecture02, slide 7}
 
 \todo[inline]{lecture02, slides 8-12}
+
+\section{Probability}
+\begin{notation}
+\(\Omega\) denotes the sample space and \(A \subseteq \Omega\) an event.
+\end{notation}
+
+\begin{definition}[Probability]
+The function \(p: \Omega \to \R\) is a \textit{probability distribution} if it satisfies the following three axioms:
+\begin{enumerate}
+\item \(\forall A \subseteq \Omega: p(A) \geq 0\)
+\item \(p(\Omega) = 1\)
+\item If \(A_1, A_2, \ldots\) are disjoint then \(p(\bigcup_{i=1}^\infty A_i) = \sum_{i=1}^\infty p(A_i)\)
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Random Variable]
+Random variables are a mapping \begin{align*}
+X: \Omega &\to \K\\
+\omega &\mapsto X(\omega)
+\end{align*}
+that assigns an element \(X(\omega) \in \K\) to each outcome \(\omega\).
+\end{definition}
+
+\begin{notation}[Random Variable]\hfill
+\begin{itemize}
+\item \(X\) is a random variable
+\item \(x\) is a value taken by the random variable \(X\)
+\end{itemize}
+\end{notation}
+
+\subsection{Categorical Distribution}
+\begin{itemize}
+\item Is a discrete distribution over \(K\) events.
+\item Assigns to the \(k\)-th event the probability \(pi_k\).
+\item The random variable can be coded as a vector or index
+\begin{itemize}
+\item \textit{Index coding:} The random variable takes the index of the event that occured
+\item \textit{Vector coding:} The random variable is a vector of size \(K\) and if event \(k\) occurs then the \(k\)-th element is set to one, all others to zero.
+\end{itemize}
+\end{itemize}
+
+\begin{definition}[Probability Mass Function]
+The probability mass function is defined by \[
+p(\matr{z} | \matr{\pi}) = \prod_{k=1}^K \pi_k^{z_k}
+\]
+where \(\pi_k\) represents the probability of seeing element \(k\), \(\matr{z}\) is a random variable in vector coding and the following holds:
+\begin{itemize}
+\item \(\pi_k \geq 0\)
+\item \(\sum_{k=1}^K \pi_k = 1\)
+\end{itemize}
+\end{definition}
+
+\section{Distributions}
+\subsection{Gaussian Distribution}
+\begin{definition}[Probability Density Function of Gaussian Distribution]
+\[
+p(x|\mu, \sigma) = \mathcal{N}(x|\mu, \sigma) = \frac{1}{\sqrt{2 \pi} \cdot \sigma} \exp \left\lbrace -\frac{(x - \mu)^2}{2\sigma^2} \right\rbrace
+\]
+
+\begin{itemize}
+\item \(\mu\) is the mean of the distribution
+\item \(\sigma^2\) is the variance of the distribution
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Probability for Gaussian Distribution]
+The probability for \(X \in [a, b]\) is given by the integral \[
+P(a < X < b) = \int_a^b p(x) dx = \frac{1}{\sqrt{2 \pi} \cdot \sigma} \int_a^b \exp \left\lbrace -\frac{(x - \mu)^2}{2\sigma^2} \right\rbrace dx.
+\]
+\end{definition}
+
+\subsection{Multivariate Gaussian Distribution}
+Generalizes the (univariate) Gaussian distribution to higher dimensions. The sample space is now \(\matr{\mathcal{X}} \subseteq \R^D\). A random vector\footnote{a random variable in vector coding} \(\matr{X} = (X_1, \ldots, X_D)^\top\) has a multivariate normal distribution if every linear combination of its components (i.e. \(Y = a_1 X_1 + \cdots + a_D X_D\)) has a univariate normal distribution.
+
+\begin{definition}
+\[
+p(\matr{x}|\matr{\mu}, \matr{\Sigma}) = \mathcal{N}(\matr{x}|\matr{\mu}, \matr{\Sigma}) :=
+\frac{1}{(\sqrt{2\pi})^D |\matr{\Sigma}|^\frac{1}{2}} \exp \left( -\frac{1}{2}(\matr{x} - \matr{\mu}^\top) \matr{\Sigma}^{-1} (\matr{x} - \matr{\mu}) \right)
+\]
+\end{definition}
+
+\todo[inline]{lecture04 slide 38, not clear what this is. Maybe read Wikipedia article regarding this topic?}
