@@ -147,4 +147,29 @@ d(\mathcal{C}, \mathcal{C}') := \min_{\Pi} \frac{1}{2} \| \matr{Z} - \Pi(\matr{Z
 where \(\Pi(\matr{Z}')\) is one of the possible row permutations of \(\matr{Z}'\).
 \end{definition}
 
-\todo[inline]{... lecture04 slide 24ff}
+\subsection{Extended Version of Stability Calculations}
+\todo[inline]{search difference to the ``not extended'' version and why we care}
+
+Let \(\matr{X}, \matr{X}'\) be two arbitrary data sets of size \(N\) respectively \(N'\).
+\begin{enumerate}
+\item Cluster \(\matr{X}, \matr{X}'\) to get \(\matr{Z}, \matr{Z}'\)
+\item Train a multi-class classifier \(\phi\) on \((\matr{X}, \matr{Z})\)
+\item Now we apply \(\phi\) on \(\matr{X}'\) and compare, after permuting, the output with \(\matr{Z}'\): \[
+r := \frac{1}{N'} \min_{\Pi \in \mathbb{S}_K} \left\lbrace \sum_{n=1}^{N'} \mathbb{I}_{\left\lbrace \Pi(\phi(\matr{x}'_n)) \neq \matr{z}'_n \right\rbrace} \right\rbrace.
+\]
+Where \(\mathbb{I}_{\left\lbrace p \right\rbrace}\) is the indicator function and is \(1\) iff the predicate \(p\) is true, \(0\) otherwise. \(\mathbb{S}_K\) is the symmetric group and minimizing over \(\Pi \in \mathbb{S}_K\) compensates for the permutation of the cluster numbers. \todo{symmetric group? not sure what \(\mathbb{S}_K\) really represents}
+\end{enumerate}
+
+\subsubsection{Normalization of Stability}
+Higher number of clusters makes it more difficult to have a small rate \(r\) of inconsistent cluster assignments. We can define the rate \(r_\text{random} := \frac{K-1}{K}\) for a random assignment given \(K\) clusters. Now we can compare hypotheses with different \(K\) by relating \(r\) to \(r_\text{random}\) as follows.
+
+\begin{definition}[Stability]
+\[
+\operatorname{stab} := 1 - \frac{r}{r_\text{rand}}
+\]
+
+If \(\operatorname{stab} = 1\) then there is no inconsistent assignments, this is the (perfect) goal. If \(\operatorname{stab} = 0\) then our algorithm is not better than random assignment.
+\end{definition}
+
+\todo[inline]{not clear about motivation, content and if at all important: lecture04 slide 27ff (``K-means as Matrix Factorization'')}
+
