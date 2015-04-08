@@ -1,0 +1,75 @@
+\chapter{Non-Negative Matrix Factorization}
+
+\section{Motivation \& Example: Semantic Document Representation}
+Given some corpus of text documents (e.g. web pages, PDFs) we're interested in finding a low-dimensional representation of each document and to find \textit{semantic dimensions} (topics, concepts) in the set of documents.
+
+This would allow to...
+\begin{itemize}
+\item get a more robust representation than just a word-based one
+\item define meaningful similarities between documents
+\item compress the document corpus or index
+\end{itemize}
+
+\begin{definition}[Vocabulary]
+The vocabulary is every ``meaningful'' word in a language. This excludes for example all stop words (``the'', ``is'', ``at'', ``which'', ...).
+
+After that we filter out infrequent words, misspellings, tokenizer errors, etc. and do \textit{stemming} (optionally).
+
+\(D\) is the size of the vocabulary.
+\end{definition}
+
+\begin{remark}[Stemming]
+Stemming is the process of reducing morphological variations of words. For example ``argue'', ``argued'', ``argues'', ... is reduced to the stem ``arg''
+\end{remark}
+
+A document is from now on represented by a \textit{bag of words}, i.e. words from the vocabulary ignoring the order of them in the document. This way each document can be represented by a vector of length \(D\) with frequencies/counts of the different words found. This vector is very sparse!
+
+\begin{definition}[Document-Term Matrix]
+This matrix \(\matr{X} \in \R_{\geq 0}^{D \times N}\) stores the word counts for each document:
+\[
+\matr{X} = [\matr{x}_1, \matr{x}_2, \ldots, \matr{x}_N].
+\]
+
+Here \(N\) is the number of documents and \(x_{d,n}\) represents the frequency of the \(d\)-th word in the \(n\)-th document.
+\end{definition}
+
+\section{Non-Negative Matrix Factorization (NMF)}
+
+\begin{definition}[Non-Negative Matrix Factorization (NMF)]
+The NMF of \(\matr{X}\) is
+\[
+\matr{X} \approx \matr{UZ}
+\]
+with \(\matr{U} \in \R_{\geq 0}^{D \times K}\) and \(\matr{Z} \in \R_{\geq 0}^{K \times N}\) where
+\begin{itemize}
+\item \(N\) is the number of documents
+\item \(D\) the vocabulary size
+\item \(K\) number of dimensions (model design choice)
+\item it results in data reduction as \((D+N)K \ll DN\)
+\end{itemize}
+\end{definition}
+
+\begin{notation}
+\(X \in \R_{\geq 0}^{N \times M}\) denotes a \(N \times M\) matrix that has only non-negative entries.
+\end{notation}
+
+\section{Classic Latent Semantic Indexing (LSI)}
+Uses a truncated SVD:
+\[
+\tilde{\matr{X}}_K = \matr{U} \tilde{\matr{\Sigma}}_K \matr{V}^\top \approx \matr{X}.
+\]
+
+Here \(\tilde{\matr{\Sigma}}_K\) contains only the largest \(K\) singular values and the rest set to zero.
+
+\((\matr{U} \tilde{\matr{\Sigma}}_K)^\top\) is interpreted as a mapping from the \(D\)-dimensional ``word space'' to a \(K\)-dimensional latent ``topic space''.
+
+A new document/query \(\matr{x}\) is mapped by: \( \matr{x} \mapsto (\matr{U} \tilde{\matr{\Sigma}}_K)^\top \matr{x}\).
+
+Already mapped vectors \(\bar{\matr{x}}\) can be compared by the inner product:
+\[
+\left\langle \bar{\matr{x}}_1, \bar{\matr{x}}_2 \right\rangle = \left(
+(\matr{U} \tilde{\matr{\Sigma}}_K)^\top \matr{x}_1
+\right)^\top (\matr{U} \tilde{\matr{\Sigma}}_K)^\top \matr{x}_2 = \matr{x}_1^\top \matr{U} \tilde{\matr{\Sigma}}_K^2 \matr{U}^\top \matr{x}_2
+\]
+
+\todo[inline]{stopped at lecture06 slide 7}

@@ -12,7 +12,8 @@
   enumitem,
   todonotes,
   wasysym,
-  algorithm
+  algorithm,
+  amsthm
 }
 
 \usepackage[hidelinks]{hyperref}
@@ -26,8 +27,18 @@
 %
 % amsthm
 %
-\usepackage{amsthm}
 
+% fix because we use parskip
+\begingroup
+    \makeatletter
+    \@for\theoremstyle:=definition,remark,plain\do{%
+        \expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{%
+            \addtolength\thm@preskip\parskip
+            }%
+        }
+\endgroup
+
+% theorem definitions
 \theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
 \newtheorem{theorem}{Theorem}[section]
@@ -101,6 +112,8 @@
 \input{svd.tex}
 \input{kmeans.tex}
 \input{probclust.tex}
+\input{nonegmatrfact.tex}
+
 \input{statprob.tex}
 
 \end{document}
