@@ -43,7 +43,7 @@
 %
 % disable paragraph indentation
 %
-\setlength{\parindent}{0pt}
+\usepackage[parfill]{parskip}
 
 %
 % number sets
@@ -68,6 +68,7 @@
 % math symbols/functions
 %
 \DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 %
 % section settings
@@ -99,6 +100,7 @@
 \input{pca.tex}
 \input{svd.tex}
 \input{kmeans.tex}
+\input{probclust.tex}
 \input{statprob.tex}
 
 \end{document}
