@@ -13,7 +13,7 @@ Minimizing the error, i.e. the distances of the data to each principle component
 The dimension of the low-dimensional space can be set by defining a percentage of the total variance that should be represented by the low-dimensional space.
 
 \section{Successive Variance Maximization}
-\todo[inline]{Unclear what this part of lecture02 should explain/mean}
+\todo{Unclear what this part of lecture02 should explain/mean}
 Let \(\{\matr{x}_n\},\ \matr{x}_n \in \R^D,\ n = 1, \ldots, N\). The goal is now to project the data \(\matr{x}_n\) onto a \(K \leq D\) dimensional space while maximizing the variance of the projected data. The data \(\matr{x}_n\) is represented by a matrix \(\matr{X} = [\matr{x}_1, \matr{x}_2, \ldots, \matr{x}_N] \in \R^{D \times N}\).
 
 \section{Statistics}
@@ -117,7 +117,7 @@ Now we resubstitute the displacement into the error criterion which leads to \[
 J = \frac{1}{N}\sum_{n=1}^N \sum_{d=K+1}^D (\matr{x}_n^\top \matr{u}_d - \bar{\matr{x}}^\top \matr{u}_d)^2 = \sum_{d=K+1}^D \matr{u}_d^\top \Sigma \matr{u}_d.
 \]
 
-\todo[inline]{is J the error? appears so because from K+1 to D we get the dimensions that are removed?!}
+\todo{is J the error? appears so because from K+1 to D we get the dimensions that are removed?!}
 
 \section{Matrix Viewpoint}
 Let the data \(\matr{x}_i\) be represented as a matrix \(\matr{X} = [\matr{x}_1, \matr{x}_2, \ldots, \matr{x}_N] \in \R^{D \times N}\). The corresponding mean-centered data is \[\bar{\matr{X}} = \matr{X} - \matr{M}\] where \[\matr{M} = [\underbrace{\bar{\matr{x}}, \bar{\matr{x}}, \ldots, \bar{\matr{x}}}_{\mathclap{N \text{ times}}}] \in R^{D \times N}.\]
@@ -130,7 +130,7 @@ To approximate \(\bar{\matr{X}}\), we return to the original basis with \[
 \tilde{\bar{\matr{X}}} = \matr{U}_K \cdot \tilde{\matr{Z}}_K.
 \]
 
-\todo[inline]{Unclear what this last part exactly tries to explain...}
+\todo{Unclear what this last part exactly tries to explain...}
 
 \section{Performing PCA}
 Let \(\matr{X} \in \R^{D \times N}\) be a given observation. After performing PCA we're interested in \(\tilde{\matr{X}} \in \R^{K \times N}\) with \(K \leq K\) such that \(\tilde{\matr{X}}\) is the low-dimensional representation of \(\matr{X}\).
@@ -154,7 +154,7 @@ Now we have to center the data (relocate the data around \(\matr{0}\)) by subtra
 \matr{\Sigma} = \frac{1}{N} \sum_{n=1}^N (\matr{x}_n - \bar{\matr{x}}) (\matr{x}_n - \bar{\matr{x}})^\top = \frac{1}{N} \underbrace{\bar{\matr{X}} \bar{\matr{X}}^\top}_{\mathclap{\text{Scatter Matrix } S}}
 \]
 
-\todo[inline]{Find answer to question in tutorial02 slide 5}
+\todo{Find answer to question in tutorial02 slide 5}
 
 \subsection{Step 4: Eigenvalue Decomposition}
 Now compute the eigenvalue decomposition of the covariance matrix: \[
@@ -165,7 +165,7 @@ After that we sort \(\matr{\Lambda}\), and change \(\matr{U}\) accordingly, such
 
 Because \(\matr{\Sigma}\) is a real and symmetric matrix the eigenvalue decomposition will result in \(\matr{U}\) being an orthogonal matrix with orthonormal entries.
 
-\todo[inline]{Find answer to question tutorial02 slide 5}
+\todo{Find answer to question tutorial02 slide 5}
 
 \subsection{Step 5: Model Selection}
 Now we have to pick \(K \leq D\) according to our model. From now on we will only keep the \(K\) largest eigenvalues as those capture the maximal variance of the data.

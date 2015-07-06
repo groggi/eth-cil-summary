@@ -10,10 +10,10 @@
   mathtools,
   mathtools,
   enumitem,
-  todonotes,
   wasysym,
   algorithm,
-  amsthm
+  amsthm,
+  color,
 }
 
 \usepackage[hidelinks]{hyperref}
@@ -76,6 +76,18 @@
 \newcommand{\matr}[1]{\boldsymbol{\mathrm{#1}}}
 
 %
+% Todo/Comments
+%
+\newcommand{\mynote}[3]{
+  \textcolor{#2}{
+    \fbox{\bfseries\sffamily\scriptsize#1}
+    {\small\textsf{\emph{#3}}}
+ }
+}
+
+\newcommand\todo[1]{\mynote{T}{red}{#1}}
+
+%
 % math symbols/functions
 %
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -100,10 +112,6 @@
 
 % index
 \tableofcontents
-\clearpage
-
-% todo list
-\listoftodos
 \clearpage
 
 % chapters
