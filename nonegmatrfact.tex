@@ -1,19 +1,12 @@
 \chapter{Non-Negative Matrix Factorization}
 
 \section{Motivation \& Example: Semantic Document Representation}
-Given some corpus of text documents (e.g. web pages, PDFs) we're interested in finding a low-dimensional representation of each document and to find \textit{semantic dimensions} (topics, concepts) in the set of documents.
-
-This would allow to...
-\begin{itemize}
-\item get a more robust representation than just a word-based one
-\item define meaningful similarities between documents
-\item compress the document corpus or index
-\end{itemize}
+Given some corpus of text documents (e.g. web pages, PDFs) we're interested to find a low-dimensional representation of for each document and to extract the semantic dimensions, i.e. the topics/concepts, of these text documents.
 
 \begin{definition}[Vocabulary]
 The vocabulary is every ``meaningful'' word in a language. This excludes for example all stop words (``the'', ``is'', ``at'', ``which'', ...).
 
-After that we filter out infrequent words, misspellings, tokenizer errors, etc. and do \textit{stemming} (optionally).
+In addition infrequently used words, misspellings, tokenizer error, etc. are removed from the documents. Optionally \emph{stemming} is done.
 
 \(D\) is the size of the vocabulary.
 \end{definition}
@@ -22,7 +15,7 @@ After that we filter out infrequent words, misspellings, tokenizer errors, etc. 
 Stemming is the process of reducing morphological variations of words. For example ``argue'', ``argued'', ``argues'', ... is reduced to the stem ``arg''
 \end{remark}
 
-A document is from now on represented by a \textit{bag of words}, i.e. words from the vocabulary ignoring the order of them in the document. This way each document can be represented by a vector of length \(D\) with frequencies/counts of the different words found. This vector is very sparse!
+In a first step each document is represented by a \textit{bag of words}, i.e. all words present in the document \emph{and} our vocabulary. This removes the order in which this words were used in the document and keeps only record on the frequency  of each word (number of times a word appeared in the document). Therefore, each document can be represented by a vector of length \(D\), where each element represents a word and the frequency it appeared in the document. This vector is very sparse.
 
 \begin{definition}[Document-Term Matrix]
 This matrix \(\matr{X} \in \R_{\geq 0}^{D \times N}\) stores the word counts for each document:
@@ -45,8 +38,9 @@ with \(\matr{U} \in \R_{\geq 0}^{D \times K}\) and \(\matr{Z} \in \R_{\geq 0}^{K
 \item \(N\) is the number of documents
 \item \(D\) the vocabulary size
 \item \(K\) number of dimensions (model design choice)
-\item it results in data reduction as \((D+N)K \ll DN\)
 \end{itemize}
+
+This results in a data reduction, i.e. a lower rank representation, if we choose K such that \((D+N)K \ll DN\).
 \end{definition}
 
 \begin{notation}
@@ -54,7 +48,7 @@ with \(\matr{U} \in \R_{\geq 0}^{D \times K}\) and \(\matr{Z} \in \R_{\geq 0}^{K
 \end{notation}
 
 \section{Classic Latent Semantic Indexing (LSI)}
-Uses a truncated SVD:
+Uses the truncated SVD:
 \[
 \tilde{\matr{X}}_K = \matr{U} \tilde{\matr{\Sigma}}_K \matr{V}^\top \approx \matr{X}.
 \]
@@ -63,7 +57,7 @@ Here \(\tilde{\matr{\Sigma}}_K\) contains only the largest \(K\) singular values
 
 \((\matr{U} \tilde{\matr{\Sigma}}_K)^\top\) is interpreted as a mapping from the \(D\)-dimensional ``word space'' to a \(K\)-dimensional latent ``topic space''.
 
-A new document/query \(\matr{x}\) is mapped by: \( \matr{x} \mapsto (\matr{U} \tilde{\matr{\Sigma}}_K)^\top \matr{x}\).
+A new document/query \(\matr{x}\) is mapped by: \( \matr{x} \mapsto (\matr{U} \tilde{\matr{\Sigma}}_K)^\top \matr{x}\). \todo{What is the interpretation of such a query/mapping? What does the result mean?}
 
 Already mapped vectors \(\bar{\matr{x}}\) can be compared by the inner product:
 \[
@@ -71,5 +65,44 @@ Already mapped vectors \(\bar{\matr{x}}\) can be compared by the inner product:
 (\matr{U} \tilde{\matr{\Sigma}}_K)^\top \matr{x}_1
 \right)^\top (\matr{U} \tilde{\matr{\Sigma}}_K)^\top \matr{x}_2 = \matr{x}_1^\top \matr{U} \tilde{\matr{\Sigma}}_K^2 \matr{U}^\top \matr{x}_2
 \]
+\todo{Not sure, but I assume this formula gives us a distance measurement for two documents in regard to the model we created using LSI? Is \(\bar{\matr{x}}\) the result of the previous mapping?}
 
-\todo[inline]{stopped at lecture06 slide 7}
+\section{Probabilistic Latent Semantic Indexing (pLSI)}
+Is a probabilistic model which takes non-negativity of the entries into account. Further is is able to deal with polysemy (words having multiple meanings).
+
+\subsection{Topic Model}
+A \emph{topic} is similar to clusters, however each word can belong to multiple topics (probabilistic). Each topic is described as a distribution over words (i.e. the likelihood of each word being in a document belonging to the specific topic). Each document is a \emph{mixture of topics}. This is different to a probabilistic assignment, where the probability of a document belonging to a specific topic is captured. Here each document can cover multiple topics, without any assignment of probabilities to be part of one of these topics more than the others.
+
+\subsection{Generative Model}
+\todo{Ignored lecture slides (lecture06 slide 10-30), based on tutorial slides.}
+
+\paragraph{The Model}
+The generative model is based on a \emph{topic set} \(\{z_1, \ldots, z_K\}\), \emph{word set} \(\{w_1, \ldots, w_M\}\), and a \emph{document set} \(\{d_1, \ldots, d_N\}\). Now we \emph{assume} the following probability factorization:
+\[
+P(w | d) = \sum_z P(w | z) P(z | d),
+\] assuming independence of word and document given a topic. The joint distribution of a document and a word is therefore \(P(d, w) = P(w | d) P(d)\).
+
+\todo{Why do we need to sample to get the tuple \((d,w)\)}\\
+\todo{What is given/known? What is the Model? Not clear}
+
+\paragraph{Factorization View}
+Let \(\matr{X}\) be the previously defined \emph{document-term matrix} with rows representing words, columns representing documents, and each element represents the frequency with which the word occurred in the document.
+
+The first step is to normalize \(\matr{X}\) such that its elements can be interpreted ad probabilities:
+\[
+P(w_m, d_n) = \frac{\matr{X}_{m, n}}{\sum_{m', n'} \matr{X}_{m', n'}}
+\]
+
+Using this modified \(\matr{X}\) we can interpret pLSI as a matrix factorization of the form
+\[
+\matr{X} \approx \matr{UZ}
+\]
+with \(\matr{U} \in \R_{\geq 0}^{M \times K}\) and \(\matr{Z} \in \R_{\geq 0}^{K \times N}\). We add additional restrictions to this factorization:
+\[
+\sum_{m=1}^M \matr{U}_{m, k} = 1 \; \forall k, \quad\quad \sum_{k, n} \matr{Z}_{k,n} = 1.
+\]
+
+With this restrictions in place we can write our model \(P(d_m, w_n) = \sum_z P(w|z)P(d|z)P(z)\) also as \(P(d, w) = (\matr{UZ}){m, n}\).
+
+\todo{stopped following the tutorial06 slides (10ff)}
+
