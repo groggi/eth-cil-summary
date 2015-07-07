@@ -1,0 +1,98 @@
+\chapter{Optimization}
+The general optimization problem is to minimize a function \(f(\matr{x})\) with \(\matr{x} \in \R^D\). In this lecture the function is assumed to be \(f: \R^D \to \R\), continuous and differentiable. Therefore, we are interested in finding \(\matr{x}^\star \in \R^D\) such that \(f(\matr{x}^\star)\) is minimal. 
+
+\section{Coordinate Descent}
+The basic idea is to change only one variable while keeping all others fixed.
+
+\begin{algorithm}[H]
+\caption{Coordinate Descent}
+\begin{algorithmic}[1]
+\Procedure{coordinate\_descent}{}
+\State initialize \(\matr{x}^{(0)} \in \R^D\)
+\For{t = 0:maxIter}
+	\State \(d \gets\) uniformly at random from \(1, \ldots, D\)
+	\State \(u^\star \gets \argmin_{u \in \R} f(x_1^{(t)}, x_2^{(t)}, \ldots, x_{d-1}^{(t)}, u, x_{d+1}^{(t)}, \ldots, x_D^{(t)})\)
+	\State \(\matr{x}_d^{(t+1)} \gets u^\star\) \Comment{use the newly found value for the \(d\)-th variable}
+	\State \(\matr{x}_{d'}^{(t+1)} \gets \matr{x}_{d'}^{(t)} \; \forall d' \neq d\) \Comment{use all other variables as they were in the previous round}
+\EndFor \Comment{the last ``version'' (\(\matr{x}^{(t+1)}\)) should lead to the smallest value of \(f\) we were able to find in maxIter iterations}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\section{Gradient Descent}
+A function (note the kind of functions we consider in the beginning of this chapter) \emph{decreases} in value fastest if one follows in \emph{opposite} direction of the gradient of that function at the current point. Going into the same direction as the gradient would lead us to a (local) maximum.
+
+The \emph{gradient} of a function \(f: \R^D \to \R\) is
+\[
+\nabla f(\matr{x}) := \left( \frac{\partial f(\matr{x})}{\partial \matr{x}_1}, \ldots, \frac{\partial f(\matr{x})}{\partial \matr{x}_D} \right)^\top \in \R^D
+\]
+
+\begin{algorithm}[H]
+\caption{Gradient Descent}
+\begin{algorithmic}[1]
+\Procedure{gradient\_descent}{}
+\State initialize \(\matr{x}^{(0)}\)
+\For{t = 0:maxIters}
+	\State \(\matr{x}^{(t+1)} \gets \matr{x}^{(t)} - \gamma \nabla f(\matr{x}^{(t)})\)
+\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+The \emph{stepsize} \(\gamma\) is usually decreased in each iteration such that \(\gamma \approx \frac{1}{t}\).
+
+\section{Stochastic Gradient Descent}
+For function of the form
+\[
+f(\matr{x}) = \frac{1}{N} \sum_{n=1}^N f_n(\matr{x})
+\]
+the stochastic gradient descent can be applied.
+
+\begin{algorithm}[H]
+\caption{Stochastic Gradient Descent}
+\begin{algorithmic}[1]
+\Procedure{stochastic\_gradient\_descent}{}
+\State initialize \(\matr{x}^{(0)} \in \R^D\)
+\For{t = 0:maxIter}
+	\State \(n \gets\) uniformly at random from \(1, \ldots, N\)
+	\State \(\matr{x}^{(t+1)} \gets \matr{x}^{(t)} - \gamma \nabla f_n(\matr{x}^{(t)})\)
+\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Compared to the previous gradient descent this method is computationally cheaper, while keeping the estimate of the gradient unbiased (\( E[\nabla f_n(\matr{x})] = \nabla f(\matr{x}) \)) as long as we select \(n\) at random.
+
+Here too the stepsize is usually decreased, i.e. \(\gamma \approx \frac{1}{t}\).
+
+\section{Constrained Optimization}
+In case of constrained optimization we are interested in minimizing \(f(\matr{x})\) as before, but for a \(\matr{x} \in Q \subseteq \R^D\), i.e. \(\matr{x}\) is expected to be part of a given set.
+
+\subsection{Projected Gradient Descent}
+Use gradient descent, but project the resulting \(\matr{x}^{(i)}\) into \(Q\). To project \(\matr{x}^{(i)}\) into \(Q\) the projection function
+\[
+P_Q(\matr{x}) := \argmin_{y \in Q} \|y - x\|
+\]
+is used.
+
+\begin{algorithm}[H]
+\caption{Projected Gradient Descent}
+\begin{algorithmic}[1]
+\Procedure{projected\_gradient\_descent}{}
+\State initialize \(\matr{x}^{(0)}\)
+\For{t = 0:maxIters}
+	\State \(\matr{x}^{(t+1)} \gets P_Q\left(\matr{x}^{(t)} - \gamma \nabla f(\matr{x}^{(t)})\right)\)
+\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Constrained Optimization as Unconstrained}
+A constrained optimization can be modified to be an unconstrained one using an \emph{penalty function}. Let \(P(\matr{x})\) be a penalty function. Now we can use unconstrained optimization algorithms to solve \(f(\matr{x})\) by optimizing \(f(\matr{x}) + P(\matr{x})\) instead.
+
+There are multiple ways to define meaningful penalty function:
+\begin{itemize}
+\item Indicator function: \( P(\matr{x}) = I_Q(\matr{x}) := \begin{cases} 0 & x \in Q\\ \infty & x \neq Q \end{cases}\)
+\item Penalize error, e.g. \(Q = \{\matr{x} \in \R^D \ |\ \matr{Ax} = \matr{b}\} \Rightarrow P(\matr{x}) = \lambda \|\matr{Ax} - \matr{b}\|^2\)
+\item Linearized penalty functions
+\end{itemize}
