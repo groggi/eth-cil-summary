@@ -96,3 +96,89 @@ There are multiple ways to define meaningful penalty function:
 \item Penalize error, e.g. \(Q = \{\matr{x} \in \R^D \ |\ \matr{Ax} = \matr{b}\} \Rightarrow P(\matr{x}) = \lambda \|\matr{Ax} - \matr{b}\|^2\)
 \item Linearized penalty functions
 \end{itemize}
+
+\section{Duality for Constrained Optimization}
+We are interested in minimizing \(f(\matr{x})\) with subject to
+\begin{align*}
+g_i(\matr{x}) \leq 0,\, i = 1, \ldots, m\\
+h_i(\matr{x}) = 0,\, i = 1, \ldots, p
+\end{align*}
+with \(f(\matr{x})\) being the \emph{objective function}, \(g_i(\matr{x})\) the \emph{inequality constraint functions}, and \(h_i(\matr{x})\) the \emph{affine equality constraint functions}. Further, \[h_i(\matr{x}) = \matr{a}_i^\top \matr{x} - b_i.\]
+
+This constrained minimization problem can be translated into a unconstrained one:
+\begin{eqnarray*}
+&\min f(\matr{x}) + \sum_{i=1}^m I\_(g_i(\matr{x})) + \sum_{i=1}^p I_0(h_i(\matr{x}))\\
+&\text{with}\\
+&I\_(y) := \begin{cases} 0 & y \leq 0\\ \infty & y > 0 \end{cases} \quad\text{and}\quad
+I_0(y) := \begin{cases} 0 & u = 0\\ \infty & u \neq 0 \end{cases}
+\end{eqnarray*}
+
+It is possible \todo{why?} to approximate \(I\_(y)\) and \(I_0(y)\) linearly with \(\lambda_i y\) and \(\nu_i y\) leading us to the \emph{Lagrangian}
+\[
+L(\matr{x}, \matr{\lambda}, \matr{\nu}) := f(\matr{x}) + \sum_{i = 1}^m \matr{\lambda}_i g_i(\matr{x}) + \sum_{i = 1}^p \matr{\nu}_i h_i(\matr{x}).
+\]
+\(\lambda_i\) and \(\nu_i\) are called \emph{Langrange multipliers}. The \emph{Lagrange dual function} is defined by
+\[
+d(\matr{\lambda}, \matr{\nu}) := \inf_{x} L(\matr{x}, \matr{\lambda}, \matr{\nu}) \; \in \R.
+\]
+
+Since \(\lambda_i u \leq I\_(u)\) and \(\nu_i u \leq I_0(u)\) for all \(u\) the dual function gives us always a lower bound on the primal value \(f(\matr{x})\) of any feasible \(\matr{x}\).
+
+\begin{definition}[Lagrange dual problem]
+\todo{I don't completely get this... try to understand it}
+The Lagrange dual problem is the problem of maximizing the Lagrange dual function in regard to \(\matr{\lambda} \geq 0\). This gives us a lower bound on the unknown solution value of \(f(\matr{x}^\star)\).
+
+In case the original optimization problem is \emph{convex}, and some additional conditions \todo{... way to go to with all this details in the slides ...}, the solution value of the dual problem is \emph{equal} to the solution value of \(f(\matr{x}^\star)\) of the primal problem!
+\end{definition}
+
+\section{Convex Optimization}
+\begin{definition}[Convex Set]
+A set \(Q\) is \emph{convex} if the line segment between two points \(\matr{x}, \matr{y} \in Q\) lies in \(Q\), i.e. \(\theta \matr{x} + (1-\theta) \matr{y} \in Q\).
+
+Further:
+\begin{itemize}
+\item Intersection of convex sets are convex too
+\item Projections onto convex sets are unique, and often efficient to compute (the \(P_Q\) function already discussed above)
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Convex Function]
+A function \(f: \R^D \to \R\) is convex if
+\begin{itemize}
+\item \(\operatorname{dom}(f)\) is a convex set (this is the domain of the set, i.e. all ``valid input variables'' of the function), and
+\item \(\forall \matr{x}, \matr{y} \in \operatorname{dom}(f), 0 \leq \theta \leq 1: f(\theta \matr{x} + (1-\theta) \matr{y}) \leq \theta f(\matr{x}) + (1-\theta) f(\matr{y})\), i.e. the line segment is ``above'' the graph of \(f\).
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Graph of a function]
+The graph of a function \(f\) is defined by
+\[
+\{(\matr{x}, f(\matr{x}))\ |\ \matr{x} \in \operatorname{dom}(f)\}.
+\]
+\end{definition}
+
+\begin{definition}[Epigraph of a function]
+The epigraph of a function \(f\) is defined by
+\[
+\{(\matr{x}, t)\ |\ \matr{x} \in \operatorname{dom}(f), f(\matr{x}) \leq t\}.
+\]
+
+A function \(f\) is convex iff its epigraph is a convex set.
+\end{definition}
+
+Examples for convex functions:
+\begin{itemize}
+\item Linear functions: \(f(\matr{x}) = \matr{a}^\top \matr{x}\)
+\item Affine functions : \(f(\matr{x}) = \matr{a}^\top \matr{x} + b\)
+\item Exponential: \(f(\matr{x}) = e^{\alpha \matr{x}}\)
+\item Every norm on \(\R^D\)
+\end{itemize}
+
+\todo{Exam: Somehow I feel like they might ask for a proof that norms are convex, as is shown on slide 36 in lecture07}
+
+\emph{Convex optimization problems} are optimizations of a convex function \(f\) such that \(\matr{x}^\star \in Q\), with \(Q\) being a convex set. Note: \(\R^D\) is convex! All such convex optimization problems have the property that every local minimum is also a global minimum. All the previously shown algorithms in this chapter can be used for convex optimization problems and will \emph{converge} to the global optimum.
+
+\section{SubGradient Descent}
+\todo{not sure how/why it works}
+
+ 
