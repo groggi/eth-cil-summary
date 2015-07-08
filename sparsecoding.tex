@@ -1,0 +1,50 @@
+\chapter{Sparse Coding}
+Signals can be represented in many different ways (e.g. Fourier series). Natural signals can often be represented by a sparse representation.
+
+\section{Signal Compression}
+Let \(\matr{x}\) be a signal and \(\matr{U}\) an \(L \times L\) \emph{orthogonal} matrix. Using this orthogonal matrix we can a change of basis through the transformation of the signal into \(\matr{z} = \matr{Ux}\) while \emph{preserving the energy}:
+\[
+\| \matr{z} \|^2 = \| \matr{Ux} \|^2 = \left\langle
+	\sum_{l} \matr{x}_l \matr{U}_{:, l},
+	\sum_{l} \matr{x}_l \matr{U}_{:, l}
+\right\rangle
+\overbrace{=}^{\substack{\text{due to} \\ \text{orthogonality}}}
+\sum_{l=1}^{L} \matr{x}_l^2 \underbrace{\langle \matr{U}_{:, l}, \matr{U}_{:, l}}_{= 1?} \rangle
+= \| x \|^2
+\]
+\todo{Not sure the last step is really valid for ``just'' an orthogonal matrix \(\matr{U}\). Should be only possible for ortho\emph{normal} \(\matr{U}\)?}
+
+Using the transformed signal \(\matr{z}\) we can now only keep the \(K\) ``strongest'' values. If we chose \(K \ll L\) we get the compressed signal \(\hat{\matr{z}}\).
+
+The signal can be reconstructed using the inverse transformation, i.e. \(\hat{\matr{x}} = \matr{U^\top \hat{z}}\). Note this is efficient to compute due to orthogonality: \(\matr{U}^{-1} = \matr{U}^\top\).
+
+\section{Decomposition and Reconstruction}
+Let \(\matr{x}\) be a signal vector of length \(L\), \(\{\matr{v}_1, \matr{v}_2, \ldots, \matr{v}_L\}\) an orthonormal basis, and the coefficients representing \(\matr{x}\) in this orthonormal basis are \(z_l = \langle \matr{x}, \matr{v}_l \rangle\).
+
+Using the coefficients and the basis we can reconstruct the original signal with
+\[
+\matr{x} = \sum_{l=1}^L z_l \matr{v}_l = \sum_{l=1}^L \langle \matr{x}, \matr{v}_l \rangle \matr{v}_l.
+\]
+
+By keeping only a subset of \(K\) basis functions/vectors (represented by the set \(\sigma\)) we get a sparse representation \(\hat{\matr{x}}\) of the original signal \(\matr{x}\):
+\[
+\hat{\matr{x}} = \sum_{k \in \sigma} z_k \matr{v}_k
+\]
+The resulting \emph{reconstruction error} is
+\[
+\| \matr{x} - \hat{\matr{x}} \|^2 = \sum_{k \not\in \sigma} |\langle \matr{x}, \matr{v}_k \rangle|^2
+\]
+since \(\langle \matr{v}_k, \matr{v}_l \rangle = 0\) if \(k \neq l\).
+
+\section{Discrete Fourier Transform}
+\todo{Some pictures, no explanation. Yay!}
+
+\section{Wavelet Basis}
+\todo{Less pictures, same amount of explanation.}
+
+\section{Compressive Sensing}
+The basic idea is to compress data while gathering it, instead of collecting large amounts of data to only throw most of it away for compression. Compressing while gathering also usually leads to faster acquisition time, smaller power consumption, and less storage space required.
+
+The assumption is that the original signal \(\matr{x} \in \R^D\) is sparse in some orthonormal basis \(\matr{U}\). In other words, the sparse representation \(\matr{z}\) of \(\matr{x}\) (\(\matr{x} = \matr{Uz}\)) only keeps \(K\) largest coefficients, i.e. \(\| z \|_0 = K\) where \(\| \cdot \|_0\) is the number of non-zero elements.
+
+\todo{not sure how the first part of slide 29 in lecture08 is connected to the second part, and by it the connection to the following slides}
