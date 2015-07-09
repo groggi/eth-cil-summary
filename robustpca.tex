@@ -1,0 +1,44 @@
+\chapter{Robust PCA}
+\section{Introduction}
+The goal is to find a low-rank representation of a matrix \(\matr{X}\) corrupted by a sparse perturbation:
+\[
+\matr{X} \approx \underbrace{\matr{L_0}}_{\mathclap{\text{low-rank representation of } \matr{X}}} + \overbrace{\matr{S_0}}^{\mathclap{\text{sparse perturbation matrix}}}.
+\]
+This is a so called \emph{additive decomposition}, i.e. we decompose the matrix into a sum of matrices.
+
+Such a decomposition of \(\matr{X}\) with the aim to get a low-rank representation of it and a sparse matrix can be formulated as
+\begin{eqnarray*}
+\text{minimize}_{\matr{L}, \matr{S}}& \quad\quad &\operatorname{rank}(\matr{L}) + \lambda \cdot \operatorname{card}(\matr{S})\\
+\text{subject to}& &\matr{L} + \matr{S} = \matr{X}
+\end{eqnarray*}
+with \(\operatorname{card}(\cdot)\) counting the number of non-zero entries. However, this approach is not feasible in general as it is not a convex optimization problem.
+
+An alternative approach is to do a \emph{convex relaxation}
+\begin{eqnarray*}
+\text{minimize}_{\matr{L}, \matr{S}}& \quad\quad &\|\matr{L}\|_\star + \lambda \|\matr{S}\|_1\\
+\text{subject to}& &\matr{L} + \matr{S} = \matr{X}.
+\end{eqnarray*}
+Here \(\|\cdot\|_\star\) is the \emph{nuclear norm} defined by \(\sum_{i=1}^{\min(m,n)} \sigma_i\) with \(\sigma_i\) being the \(i\)-th singular value of the \(n \times m\) matrix. \(\| \cdot \|_1\) denotes the sum of absolute values of all elements of the matrix.
+
+This alternative approach is not the same problem as our first optimization formularization. However, the alternative allows to efficiently solve the optimization, and under the right conditions will even lead to a solution which is also the solution for the first optimization problem. \todo{not clear why and how, but well\ldots}
+
+\todo{\ldots not sure how relevant slides 6 - 23 (lecture11) are and how to summarize/process them. skipped.}
+
+\section{Classical PCA Shortcomings}
+Classical PCA is very sensitive to outliers. One single data point outside the ``usual'' range leads to a complete change of the principal component. PCA is said to have a \emph{breakpoint} of zero. The \emph{breakpoint} is defined as the smallest proportion of data elements which can be changed without resulting in an arbitrarily-large change in the estimator.
+
+\section{Robust PCA}
+The basic idea is to use the previously mentioned additive decomposition to extract the noisy outliers. This outliers would end up in \(\matr{S}_0\) leaving us with \(\matr{L}_0\) to perform classical PCA on.
+
+The \emph{Principle Component Pursuit (PCP)} problem, previously encountered as \emph{convex relaxation} (\todo{what is the connection, is it really the same and just two names?}), is
+\begin{eqnarray*}
+\text{minimize}_{\matr{L}, \matr{S}}& \quad\quad &\|\matr{L}\|_\star + \lambda \|\matr{S}\|_1\\
+\text{subject to}& &\matr{L} + \matr{S} = \matr{X}.
+\end{eqnarray*}
+and, under some conditions, leads to the optimal solution of the additive decomposition into a low-rank matrix and a sparse perturbation matrix.
+
+The conditions are as follows:
+\begin{itemize}
+	\item \(\matr{X}\) can not be low-rank \textbf{and} sparse
+	\item \todo{\ldots and they lost me again \ldots}
+\end{itemize}
