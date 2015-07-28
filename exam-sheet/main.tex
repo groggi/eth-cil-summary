@@ -1,0 +1,120 @@
+\documentclass[a4paper, 11pt, landscape]{article}
+
+\usepackage{amsmath}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage[margin=0.5cm, landscape]{geometry}
+\usepackage[small,compact]{titlesec}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+% compact text
+\linespread{0.95}
+\addtolength{\parindent}{-6mm}
+
+% compact lists
+\setlist[description]{leftmargin=*, labelwidth=0em, itemindent=0em, itemsep=0em, parsep=0em, nolistsep}
+\setlist[itemize]{leftmargin=*, labelwidth=0em, itemindent=0em, itemsep=0em, parsep=0em, nolistsep}
+\setlist[enumerate]{leftmargin=*, labelwidth=0em, itemindent=0em, itemsep=0em, parsep=0em, nolistsep}
+
+% compact sections
+\titlespacing*{\section}{0pt}{0em}{0em}
+\titlespacing*{\subsection}{0pt}{0em}{0em}
+\titlespacing*{\subsubsection}{0pt}{0em}{0em}
+
+% coloured section headings for easier read
+\titleformat{name=\section}[block]
+  {\sffamily}
+  {}
+  {0pt}
+  {\colorsection}
+\newcommand{\colorsection}[1]{%
+	\colorbox{blue!10}{\parbox[t][0em]{\dimexpr\columnwidth-2\fboxsep}{\thesection\ #1}}}
+
+% multicols lines & spacing
+\setlength{\columnsep}{0.2cm}
+\setlength{\columnseprule}{0.2pt}
+
+% No page numbers
+\pagenumbering{gobble}
+
+% math helpers
+\newcommand{\matr}[1]{\boldsymbol{\mathrm{#1}}}
+
+
+\begin{document}
+\begin{multicols*}{3}
+
+\section{PCA}
+$\matr{X} \in \mathbb{R}^{D \times N}$. $N$ observations, $K$ properties. Target: $\tilde{\matr{X}} \in \mathbb{R}^{K \times N}$.
+\begin{enumerate}
+	\item Empirical Mean: $\overline{\matr{x}} = \frac{1}{N} \sum_{n=1}^N \matr{x}_n$
+	\item Center Data: $\overline{\matr{X}} = \matr{X} - [\overline{\matr{x}}, \ldots, \overline{\matr{x}}] = \matr{X} - \matr{M}$
+	\item Covariance Matrix: $\matr{\Sigma} = \frac{1}{N	} \sum_{n=1}^N (\matr{x}_n - \overline{\matr{x}}) (\matr{x}_n - \overline{\matr{x}})^\top = \frac{1}{N} \overline{\matr{X}}\overline{\matr{X}}^\top$
+	\item Eigenvalue Decomposition: $\matr{\Sigma} = \matr{U \Lambda U}^\top$, sort eigenvalues (and eigenvectors) in descending order
+	\item Select $K < D$, keep only the first $K$ eigenvalues and corresponding eigenvectors $\Rightarrow \matr{U}_K, \matr{\Lambda}_K$
+	\item Transform data onto new Basis: $\overline{\matr{Z}} = \matr{U}_K^\top \overline{\matr{X}}$
+	\item Reconstruct to original Basis: $\tilde{\overline{\matr{X}}} = \matr{U}_k \overline{\matr{Z}}$
+	\item Reverse centring: $\tilde{\matr{X}} = \tilde{\overline{\matr{X}}} + \matr{M}$
+\end{enumerate}
+
+\begin{description}
+	\item[Approx. Error:] Sum of discarded eigenvalues
+\end{description}
+
+\begin{itemize}
+	\item TODO: Covariance Matrix of the result is diagonlized
+	\item TODO: Properties needed to be known?
+\end{itemize}
+
+\section{Eigenvalue / -vectors}
+Eigenvalue Problem: $\matr{Ax} = \lambda \matr{x}$
+\begin{enumerate}
+	\item solve $(\matr{A} - \lambda \matr{I}) \matr{x} = \matr{0}$ for all $\matr{x} \neq \matr{0}$, done by solving $\operatorname{det}(\matr{A} - \lambda \matr{I}) \overset{!}{=} 0$
+	\item for each found $\lambda_i$:
+		solve $(\matr{A} - \lambda_i \matr{I}) \matr{x}_i = \matr{0}$, $\matr{x}_i$ is the $i$-th eigenvector.
+	\item (opt.) normalize eigenvector $q_i$: $q_i^{\text{norm}} = \frac{1}{\|q_i\|_2} q_i$.
+\end{enumerate}
+
+\section{Eigendecomposition}
+$\matr{A} \in \mathbb{R}^{N \times N}$ with $N$ linear independent eigenvectors, then: $\matr{A} = \matr{Q \Lambda Q}^{-1}$. $\matr{Q} \in \mathbb{R}^{N \times N}$, $i$-th column is the $i$-th eigenvector of $\matr{A}$. $\matr{\Lambda}$ is diagonal and $\matr{\Lambda}_{i,i}$ is the $i$-th eigenvector. Every symmetric matrix can be ``eigendecomposed''.
+
+$\matr{A}^{-1} = \matr{Q} \matr{\Lambda}^{-1} \matr{Q}^{-1}$, $\left[ \matr{\Lambda}^{-1} \right]_{i,i} = \frac{1}{\lambda_i}$
+
+Calculate eigenvalues $\lambda_i$ and eigenvectors $q_i$. Normalise the eigenvectors. Put eigenvectors as columns into $\matr{Q}$ and eigenvalues into the diagonal of $\matr{\Lambda}$.
+
+\section{SVD}
+TODO
+\begin{description}
+	\item[Approx. Error Frobenius Norm:] $\|\matr{A} - \tilde{\matr{A}}\|_F = \sqrt{\sum_{i > K} \sigma_i^2} = \sqrt{\sum_{i > K} \lambda_i}$
+	\item[Approx. Error Euclidean Norm:] $\|\matr{A} - \tilde{\matr{A}}\|_2 = \sigma_{K+1}$ (i.e. largest singular value that was thrown away)
+\end{description}
+
+\section{Basis Transform}
+TODO
+
+\section{Matrix/Vector}
+\begin{description}
+	\item[Symmetric:] $\matr{A} = \matr{A}^\top$
+	\item[Orthonormal:] $\matr{A}^{-1} = \matr{A}^\top$, $\matr{A} \matr{A}^\top = \matr{A}^\top \matr{A} = \matr{I}$, $\operatorname{det}(\matr{A}) \in \{+1, -1\}$, $\operatorname{det}(\matr{A}^\top \matr{A}) = 1$
+	\item[Inner Product:] (assuming everything in $\mathbb{R}^D$) $\left\langle \matr{x}, \matr{y} \right\rangle = \matr{x}^\top \matr{y} = \sum_{i=1}^{N} \matr{x}_i \matr{y}_i$
+	\begin{itemize}
+		\item $\left\langle \matr{x} \pm \matr{y}, \matr{x} \pm \matr{y} \right\rangle = \left\langle \matr{x}, \matr{x} \right\rangle \pm 2 \left\langle \matr{x}, \matr{y} \right\rangle + \left\langle \matr{y}, \matr{y} \right\rangle$
+		\item $\left\langle \matr{x}, \matr{y} + \matr{z} \right\rangle = \left\langle \matr{x}, \matr{y} \right\rangle + \left\langle \matr{x}, \matr{z} \right\rangle$
+		\item $\left\langle \matr{x} + \matr{y}, \matr{z} \right\rangle = \left\langle \matr{x}, \matr{z} \right\rangle + \left\langle \matr{y}, \matr{z} \right\rangle$
+		\item $\left\langle \matr{x}, \matr{y} + \matr{z} \right\rangle = \left\langle \matr{x}, \matr{y} \right\rangle + \left\langle \matr{x}, \matr{z} \right\rangle$
+	\end{itemize}
+	\item[Outer Product:] $\matr{u} \matr{v}^\top$, $(\matr{u} \matr{v}^\top)_{i, j} = \matr{u}_i \matr{v}_j$
+\end{description}
+
+\section{Norms}
+\begin{description}
+	\item[Euclidean:] $\|\matr{x}\|_2 := \sqrt{\sum_{i=1}^{N} \matr{x}_i^2}$
+	\item[$p$-norm:] $\|\matr{x}\|_p := \left( \sum_{i=1}^{N} |x_i|^p \right)^{\frac{1}{p}}$
+	\item[Frobenius:] $\|\matr{A}\|_F :=\allowbreak \sqrt{\sum_{i=1}^{M} \sum_{j=1}^{N} |\matr{A}_{i, j}|^2} =\allowbreak \sqrt{\operatorname{trace}(\matr{A}^\top \matr{A})} =\allowbreak \sqrt{\sum_{i=1}^{\min\{m, n\}} \sigma_i^2}$ ($\sigma_i$ is the $i$-th singularvalue), $\matr{A} \in \mathbb{R}^{M \times N}$
+\end{description}
+
+\raggedcolumns
+
+\end{multicols*}
+\end{document}
