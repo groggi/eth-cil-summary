@@ -31,6 +31,15 @@
 \newcommand{\colorsection}[1]{%
 	\colorbox{blue!10}{\parbox[t][0em]{\dimexpr\columnwidth-2\fboxsep}{\thesection\ #1}}}
 
+
+\titleformat{name=\subsection}[block]
+  {\sffamily}
+  {}
+  {0pt}
+  {\subcolorsection}
+\newcommand{\subcolorsection}[1]{%
+	\colorbox{orange!10}{\parbox[t][0em]{\dimexpr\columnwidth-2\fboxsep}{\thesubsection\ #1}}}
+
 % multicols lines & spacing
 \setlength{\columnsep}{0.2cm}
 \setlength{\columnseprule}{0.2pt}
@@ -40,7 +49,8 @@
 
 % math helpers
 \newcommand{\matr}[1]{\boldsymbol{\mathrm{#1}}}
-
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \begin{document}
 \begin{multicols*}{3}
@@ -84,7 +94,26 @@ $\matr{A}^{-1} = \matr{Q} \matr{\Lambda}^{-1} \matr{Q}^{-1}$, $\left[ \matr{\Lam
 Calculate eigenvalues $\lambda_i$ and eigenvectors $q_i$. Normalise the eigenvectors. Put eigenvectors as columns into $\matr{Q}$ and eigenvalues into the diagonal of $\matr{\Lambda}$.
 
 \section{SVD}
-TODO
+\begin{itemize}
+	\item $\matr{A} = \matr{U} \matr{D} \matr{V}^\top$
+	\item $\matr{A} \in \mathbb{R}^{N \times P}, \matr{U} \in \mathbb{R}^{N \times N}, \matr{D} \in \mathbb{R}^{N \times P}, \matr{V} \in \mathbb{R}^{P \times P}$
+	\item $\matr{U}^\top \matr{U} = I = \matr{V}^\top \matr{V}$ ($\matr{U}, \matr{V}$ columns are orthonormal)
+	\item $\matr{U}$ columns are eigenvectors of $\matr{A} \matr{A}^\top$, $\matr{V}$ columns are eigenvectors of $\matr{A}^\top \matr{A}$, $\matr{D}$ diagonal elements are singular values, i.e. the square roots of the eigenvalues ($\matr{A}^\top \matr{A}$ and $\matr{A} \matr{A}^\top$ have the same eigenvalues)
+	\item $\matr{A}^\top = \matr{V} \matr{D} \matr{U}^\top$
+	\item $\matr{A}^\top \matr{A} = \matr{A} \matr{D}^2 \matr{V}^\top$
+	\item $(\matr{D}^{-1})_{i,i} = \frac{1}{\matr{D}_{i, i}}$
+\end{itemize}
+
+\begin{enumerate}
+	\item calculate $\matr{A}^\top \matr{A}$ or $\matr{A} \matr{A}^\top$.
+	\item calculate eigenvalues of $\matr{A}^\top \matr{A}$, the square root of them are the diagonal elements of $\matr{D}$.
+	\item calculate eigenvectors of $\matr{A}^\top \matr{A}$ using the eigenvalues resulting in the columns of $\matr{V}$.
+	\item calculate the missing matrix: $\matr{U} = \matr{A} \matr{V} \matr{D}^{-1}$. Can be checked by calculating the eigenvectors of $\matr{A} \matr{A}^\top$.
+	\item normalize each columns of $\matr{U}$ and $\matr{V}$.
+\end{enumerate}
+
+\subsection{Low-Rank approximation}
+Using only $K$ largest eigenvalues and corresponding eigenvectors.
 \begin{description}
 	\item[Approx. Error Frobenius Norm:] $\|\matr{A} - \tilde{\matr{A}}\|_F = \sqrt{\sum_{i > K} \sigma_i^2} = \sqrt{\sum_{i > K} \lambda_i}$
 	\item[Approx. Error Euclidean Norm:] $\|\matr{A} - \tilde{\matr{A}}\|_2 = \sigma_{K+1}$ (i.e. largest singular value that was thrown away)
@@ -114,6 +143,47 @@ TODO
 	\item[Frobenius:] $\|\matr{A}\|_F :=\allowbreak \sqrt{\sum_{i=1}^{M} \sum_{j=1}^{N} |\matr{A}_{i, j}|^2} =\allowbreak \sqrt{\operatorname{trace}(\matr{A}^\top \matr{A})} =\allowbreak \sqrt{\sum_{i=1}^{\min\{m, n\}} \sigma_i^2}$ ($\sigma_i$ is the $i$-th singularvalue), $\matr{A} \in \mathbb{R}^{M \times N}$
 \end{description}
 
+\section{$K$-means Algorithm}
+\begin{enumerate}
+	\item Initiate: choose randomly $K$ centroids $\matr{U} = [\matr{u}_1, \ldots, \matr{u}_K]$ (usually $K$ randomly chosen data points).
+	\item Assign data points to clusters. $k^\star(\matr{x}_n) = \argmin_k \{ \|\matr{x}_n - \matr{u}_1\|_2^2, \ldots, \|\matr{x}_n - \matr{u}_K\|_2^2 \}$ gives us the cluster $k$ whose centroid $\matr{u}_k$ is closest to data point $\matr{x}_n$. Set accordingly the $k$-th element of the $n$-th column of the assignment matrix $\matr{Z}$ to $1$, all others to $0$.
+	\item Update centroids: $\matr{u}_k = \frac{\sum_{n=1}^N z_{k,n} \matr{x}_n}{\sum_{n=1}^N z_{k,n}}$ (each centroid is in the middle of all data points assigned to it's cluster).
+	\item Repeat from step 2.
+\end{enumerate}
+Iteration stops if the half of the number of changes in $\matr{Z}$ is zero ($\frac{1}{2} \|\matr{Z} - \matr{Z}^\text{new}\|_0$).
+
+\section{Probability / Statistics}
+\begin{itemize}
+	\item $P(x) := Pr[X = x] := \sum_{y \in Y} P(x, y)$
+	\item $P(x|y) := Pr[X = x | Y = y] := \frac{P(x,y)}{P(y)},\quad \text{if } P(y) > 0$
+	\item $\forall y \in Y: \sum_{x \in X} P(x|y) = 1$ (property for any fixed $y$)
+	\item $P(x, y) = P(x|y) P(y)$
+	\item $\sum_{y \in Y} P(x, y) = P(x)$
+	\item $P(x|y) = \frac{P(y|x)P(x)}{P(y)}$ (Bayes' rule)
+	\item Two random variables $X$, $Y$ are called \emph{independent}, if knowing one of them reveal any information about the other one: $P(x|y) = P(x) \Leftrightarrow P(y|x) = P(y)$
+	\item \emph{IID} (Independent and Identically Distributed): $n$ random variables are IID if each has the same distribution and they are mutually independent.
+	\begin{itemize}
+		\item $P(x_1, \ldots, x_n) = \prod_{i=1}^n P(x_i)$
+	\end{itemize}
+\end{itemize}
+
+\section{Gaussian Mixture Models (GMM)}
+\begin{description}
+	\item[] $p(\matr{x}) = \sum_{k=1}^K \pi_k \mathcal{N}(\matr{x} | \matr{\mu}_k, \Sigma_k)$
+	\item[Likelihood of observed data $\matr{X}$:] $p(\matr{X} | \matr{\pi}, \matr{\mu}, \matr{\Sigma}) = \prod_{n=1}^N p(\matr{x}_n) = \prod_{n=1}^N \sum_{k=1}^N \pi_k \mathcal{N}(\matr{x} | \matr{\mu}_k, \matr{\Sigma}_k)$
+	\item[Log-likelihood:] $\log p(\matr{X} | \matr{\pi}, \matr{\mu}, \matr{\Sigma}) =\break \sum_{i=1}^N \log \left( \sum_{k=1}^K \pi_k \mathcal{N}(\matr{x}_i | \matr{\mu}_k, \matr{\Sigma}_k) \right)$
+\end{description}
+
+\subsection{Expectation Maximization (EM)}
+TODO
+
+\section{Lagrangian Multipliers (optimization)}
+Minimize  $f(\matr{x})$ with subject to $g_i(\matr{x}) \leq 0,\ i = 1, \ldots, m$ and $h_i(\matr{x}) = \matr{a}_i^\top \matr{x} - b_i = 0,\ i = 1, \ldots, p$.
+\begin{description}
+	\item[Lagrangian:] $L(\matr{x}, \matr{\lambda}, \matr{\nu}) := f(\matr{x}) + \sum_{i=1}^m \lambda_i g_i(\matr{x}) + \sum_{i=1}^p \nu_i h_i(\matr{x})$
+	\item[Dual function:] $d(\matr{\lambda}, \matr{\nu}) := \inf_{\matr{x}} L(\matr{x}, \matr{\lambda}, \matr{\nu}) \in \mathbb{R}$
+\end{description}
+To find the best lower bound on the optimum $f(\matr{x}^\star)$ the dual problem $d(\matr{\lambda}, \matr{\nu})$ is maximized with subject to $\matr{\lambda} \geq \matr{0}$.
 \raggedcolumns
 
 \end{multicols*}
