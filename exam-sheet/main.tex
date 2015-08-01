@@ -4,6 +4,7 @@
 \usepackage{multicol}
 \usepackage{enumitem}
 \usepackage{amsfonts}
+\usepackage{hyperref} % for Todo's and similar things
 \usepackage[margin=0.5cm, landscape]{geometry}
 \usepackage[small,compact]{titlesec}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
@@ -101,11 +102,11 @@ Calculate eigenvalues $\lambda_i$ and eigenvectors $q_i$. Normalise the eigenvec
 	\item $\matr{U}$ columns are eigenvectors of $\matr{A} \matr{A}^\top$, $\matr{V}$ columns are eigenvectors of $\matr{A}^\top \matr{A}$, $\matr{D}$ diagonal elements are singular values, i.e. the square roots of the eigenvalues ($\matr{A}^\top \matr{A}$ and $\matr{A} \matr{A}^\top$ have the same eigenvalues)
 	\item $\matr{A}^\top = \matr{V} \matr{D} \matr{U}^\top$
 	\item $\matr{A}^\top \matr{A} = \matr{A} \matr{D}^2 \matr{V}^\top$
-	\item $(\matr{D}^{-1})_{i,i} = \frac{1}{\matr{D}_{i, i}}$
+	\item $(\matr{D}^{-1})_{i,i} = \frac{1}{\matr{D}_{i, i}}$ ($\matr{D} \in \mathbb{R}^{N \times P} \to \matr{D}^{-1} \in \mathbb{R}^{P \times N}$, i.e. don't forget to transpose)
 \end{itemize}
 
 \begin{enumerate}
-	\item calculate $\matr{A}^\top \matr{A}$ or $\matr{A} \matr{A}^\top$.
+	\item calculate $\matr{A}^\top \matr{A}$.
 	\item calculate eigenvalues of $\matr{A}^\top \matr{A}$, the square root of them are the diagonal elements of $\matr{D}$.
 	\item calculate eigenvectors of $\matr{A}^\top \matr{A}$ using the eigenvalues resulting in the columns of $\matr{V}$.
 	\item calculate the missing matrix: $\matr{U} = \matr{A} \matr{V} \matr{D}^{-1}$. Can be checked by calculating the eigenvectors of $\matr{A} \matr{A}^\top$.
@@ -120,7 +121,11 @@ Using only $K$ largest eigenvalues and corresponding eigenvectors.
 \end{description}
 
 \section{Basis Transform}
-TODO
+Let $\matr{V}, \matr{W}$ be two matrices representing two basis (each column is a basis vector and they are invertible).
+
+The given vector $\matr{x}$ is represented by the \emph{coordinate vector} $\matr{a}$ in basis $\matr{V}$: $\matr{x} = \matr{V} \matr{a} \Rightarrow \matr{a} = \matr{V}^{-1} \matr{x}$. In other words: if we have a basis $\matr{V}$ and the vector $\matr{x}$ we can get the vector's representation in the basis $\matr{V}$ by calculating $\matr{a} = \matr{V}^{-1} \matr{x}$.
+
+Remember $\matr{x}$ here is just a vector with values and is not based on any basis. Just an array of values! By calculating $\matr{a}$ we get a vector that represents these values based on a basis!
 
 \section{Matrix/Vector}
 \begin{description}
@@ -134,6 +139,13 @@ TODO
 		\item $\left\langle \matr{x}, \matr{y} + \matr{z} \right\rangle = \left\langle \matr{x}, \matr{y} \right\rangle + \left\langle \matr{x}, \matr{z} \right\rangle$
 	\end{itemize}
 	\item[Outer Product:] $\matr{u} \matr{v}^\top$, $(\matr{u} \matr{v}^\top)_{i, j} = \matr{u}_i \matr{v}_j$
+	\item[Transpose:]\hfill
+		\begin{itemize}
+			\item $(\matr{A} + \matr{B})^\top = \matr{A}^\top + \matr{B}^\top$
+			\item $(\matr{A}\matr{B})^\top = \matr{B}^\top \matr{A}^\top$
+			\item $(\alpha \matr{A})^\top = \alpha \matr{A}^\top$
+			\item $(\matr{A}^\top)^{-1} = (\matr{A}^{-1})^\top$
+		\end{itemize}
 \end{description}
 
 \section{Norms}
@@ -174,10 +186,23 @@ Iteration stops if the half of the number of changes in $\matr{Z}$ is zero ($\fr
 	\item[Log-likelihood:] $\log p(\matr{X} | \matr{\pi}, \matr{\mu}, \matr{\Sigma}) =\break \sum_{i=1}^N \log \left( \sum_{k=1}^K \pi_k \mathcal{N}(\matr{x}_i | \matr{\mu}_k, \matr{\Sigma}_k) \right)$
 \end{description}
 
-\subsection{Expectation Maximization (EM)}
+\subsection{Expectation-Maximization (EM)}
+\begin{itemize}
+	\item Expectation step: Assign data to parts of the model (e.g. assign data point to a mixture component)
+	\item Maximization step: Improve the model parameters based on the new assignment
+	\item Iterative process, i.e. repeat until converges
+	\item may not result in global maximum/optimum
+	\item 
+\end{itemize}
+
+\section{Optimization}
+\subsection{Gradient Descent}
 TODO
 
-\section{Lagrangian Multipliers (optimization)}
+\subsection{Stochastic Gradient Descent}
+TODO
+
+\subsection{Lagrangian Multipliers}
 Minimize  $f(\matr{x})$ with subject to $g_i(\matr{x}) \leq 0,\ i = 1, \ldots, m$ and $h_i(\matr{x}) = \matr{a}_i^\top \matr{x} - b_i = 0,\ i = 1, \ldots, p$.
 \begin{description}
 	\item[Lagrangian:] $L(\matr{x}, \matr{\lambda}, \matr{\nu}) := f(\matr{x}) + \sum_{i=1}^m \lambda_i g_i(\matr{x}) + \sum_{i=1}^p \nu_i h_i(\matr{x})$
@@ -185,6 +210,9 @@ Minimize  $f(\matr{x})$ with subject to $g_i(\matr{x}) \leq 0,\ i = 1, \ldots, m
 \end{description}
 To find the best lower bound on the optimum $f(\matr{x}^\star)$ the dual problem $d(\matr{\lambda}, \matr{\nu})$ is maximized with subject to $\matr{\lambda} \geq \matr{0}$.
 \raggedcolumns
+
+\section{TODOs}
+\url{https://en.wikipedia.org/wiki/Transpose#Special_transpose_matrices}
 
 \end{multicols*}
 \end{document}
