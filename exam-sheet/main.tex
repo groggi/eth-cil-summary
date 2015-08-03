@@ -1,6 +1,7 @@
 \documentclass[a4paper, 11pt, landscape]{article}
 
 \usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{multicol}
 \usepackage{enumitem}
 \usepackage{amsfonts}
@@ -61,10 +62,10 @@ $\matr{X} \in \mathbb{R}^{D \times N}$. $N$ observations, $K$ properties. Target
 \begin{enumerate}
 	\item Empirical Mean: $\overline{\matr{x}} = \frac{1}{N} \sum_{n=1}^N \matr{x}_n$
 	\item Center Data: $\overline{\matr{X}} = \matr{X} - [\overline{\matr{x}}, \ldots, \overline{\matr{x}}] = \matr{X} - \matr{M}$
-	\item Covariance Matrix: $\matr{\Sigma} = \frac{1}{N	} \sum_{n=1}^N (\matr{x}_n - \overline{\matr{x}}) (\matr{x}_n - \overline{\matr{x}})^\top = \frac{1}{N} \overline{\matr{X}}\overline{\matr{X}}^\top$
-	\item Eigenvalue Decomposition: $\matr{\Sigma} = \matr{U \Lambda U}^\top$, sort eigenvalues (and eigenvectors) in descending order
+	\item Covariance Matrix: $\matr{\Sigma} = \frac{1}{N	} \sum_{n=1}^N (\matr{x}_n - \overline{\matr{x}}) (\matr{x}_n - \overline{\matr{x}})^T = \frac{1}{N} \overline{\matr{X}}\overline{\matr{X}}^T$
+	\item Eigenvalue Decomposition: $\matr{\Sigma} = \matr{U \Lambda U}^T$, sort eigenvalues (and eigenvectors) in descending order
 	\item Select $K < D$, keep only the first $K$ eigenvalues and corresponding eigenvectors $\Rightarrow \matr{U}_K, \matr{\Lambda}_K$
-	\item Transform data onto new Basis: $\overline{\matr{Z}} = \matr{U}_K^\top \overline{\matr{X}}$
+	\item Transform data onto new Basis: $\overline{\matr{Z}} = \matr{U}_K^T \overline{\matr{X}}$
 	\item Reconstruct to original Basis: $\tilde{\overline{\matr{X}}} = \matr{U}_k \overline{\matr{Z}}$
 	\item Reverse centring: $\tilde{\matr{X}} = \tilde{\overline{\matr{X}}} + \matr{M}$
 \end{enumerate}
@@ -96,20 +97,20 @@ Calculate eigenvalues $\lambda_i$ and eigenvectors $q_i$. Normalise the eigenvec
 
 \section{SVD}
 \begin{itemize}
-	\item $\matr{A} = \matr{U} \matr{D} \matr{V}^\top$
+	\item $\matr{A} = \matr{U} \matr{D} \matr{V}^T = \sum_{k=1}^{\operatorname{rank}(\matr{A})} d_{k,k} u_k v_k^T$
 	\item $\matr{A} \in \mathbb{R}^{N \times P}, \matr{U} \in \mathbb{R}^{N \times N}, \matr{D} \in \mathbb{R}^{N \times P}, \matr{V} \in \mathbb{R}^{P \times P}$
-	\item $\matr{U}^\top \matr{U} = I = \matr{V}^\top \matr{V}$ ($\matr{U}, \matr{V}$ columns are orthonormal)
-	\item $\matr{U}$ columns are eigenvectors of $\matr{A} \matr{A}^\top$, $\matr{V}$ columns are eigenvectors of $\matr{A}^\top \matr{A}$, $\matr{D}$ diagonal elements are singular values, i.e. the square roots of the eigenvalues ($\matr{A}^\top \matr{A}$ and $\matr{A} \matr{A}^\top$ have the same eigenvalues)
-	\item $\matr{A}^\top = \matr{V} \matr{D} \matr{U}^\top$
-	\item $\matr{A}^\top \matr{A} = \matr{A} \matr{D}^2 \matr{V}^\top$
+	\item $\matr{U}^T \matr{U} = I = \matr{V}^T \matr{V}$ ($\matr{U}, \matr{V}$ columns are orthonormal)
+	\item $\matr{U}$ columns are eigenvectors of $\matr{A} \matr{A}^T$, $\matr{V}$ columns are eigenvectors of $\matr{A}^T \matr{A}$, $\matr{D}$ diagonal elements are singular values, i.e. the square roots of the eigenvalues ($\matr{A}^T \matr{A}$ and $\matr{A} \matr{A}^T$ have the same eigenvalues)
+	\item $\matr{A}^T = \matr{V} \matr{D} \matr{U}^T$
+	\item $\matr{A}^T \matr{A} = \matr{A} \matr{D}^2 \matr{V}^T$
 	\item $(\matr{D}^{-1})_{i,i} = \frac{1}{\matr{D}_{i, i}}$ ($\matr{D} \in \mathbb{R}^{N \times P} \to \matr{D}^{-1} \in \mathbb{R}^{P \times N}$, i.e. don't forget to transpose)
 \end{itemize}
 
 \begin{enumerate}
-	\item calculate $\matr{A}^\top \matr{A}$.
-	\item calculate eigenvalues of $\matr{A}^\top \matr{A}$, the square root of them are the diagonal elements of $\matr{D}$.
-	\item calculate eigenvectors of $\matr{A}^\top \matr{A}$ using the eigenvalues resulting in the columns of $\matr{V}$.
-	\item calculate the missing matrix: $\matr{U} = \matr{A} \matr{V} \matr{D}^{-1}$. Can be checked by calculating the eigenvectors of $\matr{A} \matr{A}^\top$.
+	\item calculate $\matr{A}^T \matr{A}$.
+	\item calculate eigenvalues of $\matr{A}^T \matr{A}$, the square root of them are the diagonal elements of $\matr{D}$.
+	\item calculate eigenvectors of $\matr{A}^T \matr{A}$ using the eigenvalues resulting in the columns of $\matr{V}$.
+	\item calculate the missing matrix: $\matr{U} = \matr{A} \matr{V} \matr{D}^{-1}$. Can be checked by calculating the eigenvectors of $\matr{A} \matr{A}^T$.
 	\item normalize each columns of $\matr{U}$ and $\matr{V}$.
 \end{enumerate}
 
@@ -129,30 +130,30 @@ Remember $\matr{x}$ here is just a vector with values and is not based on any ba
 
 \section{Matrix/Vector}
 \begin{description}
-	\item[Symmetric:] $\matr{A} = \matr{A}^\top$
-	\item[Orthonormal:] $\matr{A}^{-1} = \matr{A}^\top$, $\matr{A} \matr{A}^\top = \matr{A}^\top \matr{A} = \matr{I}$, $\operatorname{det}(\matr{A}) \in \{+1, -1\}$, $\operatorname{det}(\matr{A}^\top \matr{A}) = 1$
-	\item[Inner Product:] (assuming everything in $\mathbb{R}^D$) $\left\langle \matr{x}, \matr{y} \right\rangle = \matr{x}^\top \matr{y} = \sum_{i=1}^{N} \matr{x}_i \matr{y}_i$
+	\item[Symmetric:] $\matr{A} = \matr{A}^T$
+	\item[Orthonormal:] $\matr{A}^{-1} = \matr{A}^T$, $\matr{A} \matr{A}^T = \matr{A}^T \matr{A} = \matr{I}$, $\operatorname{det}(\matr{A}) \in \{+1, -1\}$, $\operatorname{det}(\matr{A}^T \matr{A}) = 1$
+	\item[Inner Product:] (assuming everything in $\mathbb{R}^D$) $\left\langle \matr{x}, \matr{y} \right\rangle = \matr{x}^T \matr{y} = \sum_{i=1}^{N} \matr{x}_i \matr{y}_i$
 	\begin{itemize}
 		\item $\left\langle \matr{x} \pm \matr{y}, \matr{x} \pm \matr{y} \right\rangle = \left\langle \matr{x}, \matr{x} \right\rangle \pm 2 \left\langle \matr{x}, \matr{y} \right\rangle + \left\langle \matr{y}, \matr{y} \right\rangle$
 		\item $\left\langle \matr{x}, \matr{y} + \matr{z} \right\rangle = \left\langle \matr{x}, \matr{y} \right\rangle + \left\langle \matr{x}, \matr{z} \right\rangle$
 		\item $\left\langle \matr{x} + \matr{y}, \matr{z} \right\rangle = \left\langle \matr{x}, \matr{z} \right\rangle + \left\langle \matr{y}, \matr{z} \right\rangle$
 		\item $\left\langle \matr{x}, \matr{y} + \matr{z} \right\rangle = \left\langle \matr{x}, \matr{y} \right\rangle + \left\langle \matr{x}, \matr{z} \right\rangle$
 	\end{itemize}
-	\item[Outer Product:] $\matr{u} \matr{v}^\top$, $(\matr{u} \matr{v}^\top)_{i, j} = \matr{u}_i \matr{v}_j$
+	\item[Outer Product:] $\matr{u} \matr{v}^T$, $(\matr{u} \matr{v}^T)_{i, j} = \matr{u}_i \matr{v}_j$
 	\item[Transpose:]\hfill
 		\begin{itemize}
-			\item $(\matr{A} + \matr{B})^\top = \matr{A}^\top + \matr{B}^\top$
-			\item $(\matr{A}\matr{B})^\top = \matr{B}^\top \matr{A}^\top$
-			\item $(\alpha \matr{A})^\top = \alpha \matr{A}^\top$
-			\item $(\matr{A}^\top)^{-1} = (\matr{A}^{-1})^\top$
+			\item $(\matr{A} + \matr{B})^T = \matr{A}^T + \matr{B}^T$
+			\item $(\matr{A}\matr{B})^T = \matr{B}^T \matr{A}^T$
+			\item $(\alpha \matr{A})^T = \alpha \matr{A}^T$
+			\item $(\matr{A}^T)^{-1} = (\matr{A}^{-1})^T$
 		\end{itemize}
 \end{description}
 
 \section{Norms}
 \begin{description}
-	\item[Euclidean:] $\|\matr{x}\|_2 := \sqrt{\sum_{i=1}^{N} \matr{x}_i^2}$
+	\item[Euclidean:] $\|\matr{x}\|_2 := \sqrt{\sum_{i=1}^{N} \matr{x}_i^2} = \sqrt{\matr{x}^T \matr{x}}$
 	\item[$p$-norm:] $\|\matr{x}\|_p := \left( \sum_{i=1}^{N} |x_i|^p \right)^{\frac{1}{p}}$
-	\item[Frobenius:] $\|\matr{A}\|_F :=\allowbreak \sqrt{\sum_{i=1}^{M} \sum_{j=1}^{N} |\matr{A}_{i, j}|^2} =\allowbreak \sqrt{\operatorname{trace}(\matr{A}^\top \matr{A})} =\allowbreak \sqrt{\sum_{i=1}^{\min\{m, n\}} \sigma_i^2}$ ($\sigma_i$ is the $i$-th singularvalue), $\matr{A} \in \mathbb{R}^{M \times N}$
+	\item[Frobenius:] $\|\matr{A}\|_F :=\allowbreak \sqrt{\sum_{i=1}^{M} \sum_{j=1}^{N} |\matr{A}_{i, j}|^2} =\allowbreak \sqrt{\operatorname{trace}(\matr{A}^T \matr{A})} =\allowbreak \sqrt{\sum_{i=1}^{\min\{m, n\}} \sigma_i^2}$ ($\sigma_i$ is the $i$-th singularvalue), $\matr{A} \in \mathbb{R}^{M \times N}$
 \end{description}
 
 \section{$K$-means Algorithm}
@@ -192,10 +193,22 @@ Iteration stops if the half of the number of changes in $\matr{Z}$ is zero ($\fr
 	\item Maximization step: Improve the model parameters based on the new assignment
 	\item Iterative process, i.e. repeat until converges
 	\item may not result in global maximum/optimum
-	\item 
+	\item TODO
 \end{itemize}
 
+\subsection{Haar Wavelet}
+\begin{description}
+	\item[Mother function:] $\psi(t)$ is $1$ for $0 \leq t < \frac{1}{2}$, $-1$ for $\frac{1}{2} \leq t < 1$, $0$ otherwise.
+	\item[Haar function:] $\psi_{n,k}(t) = 2^{n/2} \psi(2^n t - k)$, $2^{n/2}$ only needed if normalized values needed!
+\end{description}
+
+For the not normalized basis: $\matr{W}^{-1} = (\matr{W^T} \matr{W})^{-1} \matr{W}^T = \operatorname{diag}(\frac{1}{l_1}, \ldots, \frac{1}{l_n}) \matr{W}^T$ where $l_i$ is the norm of the $i$-th column of $\matr{W}$. This is valid because $\matr{W}$ is orthogonal!
+
+Don't forget that $[1, 1, \ldots, 1]^T$ is the first non-normalized Haar Wavelet basis!
+
 \section{Optimization}
+\subsection{Convex Functions}
+A function $f(x)$ is convex if domain of $f$ (set of input values) is convex (e.g. $R^D$) and $\forall y, z, \forall t \in [0, 1]: f(t \cdot y + (1-t) \cdot z) \leq t \cdot f(y) + (1-t) \cdot f(z)$.
 \subsection{Gradient Descent}
 TODO
 
@@ -203,7 +216,7 @@ TODO
 TODO
 
 \subsection{Lagrangian Multipliers}
-Minimize  $f(\matr{x})$ with subject to $g_i(\matr{x}) \leq 0,\ i = 1, \ldots, m$ and $h_i(\matr{x}) = \matr{a}_i^\top \matr{x} - b_i = 0,\ i = 1, \ldots, p$.
+Minimize  $f(\matr{x})$ with subject to $g_i(\matr{x}) \leq 0,\ i = 1, \ldots, m$ and $h_i(\matr{x}) = \matr{a}_i^T \matr{x} - b_i = 0,\ i = 1, \ldots, p$.
 \begin{description}
 	\item[Lagrangian:] $L(\matr{x}, \matr{\lambda}, \matr{\nu}) := f(\matr{x}) + \sum_{i=1}^m \lambda_i g_i(\matr{x}) + \sum_{i=1}^p \nu_i h_i(\matr{x})$
 	\item[Dual function:] $d(\matr{\lambda}, \matr{\nu}) := \inf_{\matr{x}} L(\matr{x}, \matr{\lambda}, \matr{\nu}) \in \mathbb{R}$
